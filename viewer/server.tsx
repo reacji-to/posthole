@@ -8,6 +8,7 @@ import path from 'node:path';
 import { cardsFor, replyTree } from './render';
 import { createStore } from './store';
 import { Page, ReplyTree } from './views';
+import { interfaceOf } from './interfaces';
 
 const { values } = parseArgs({ options: { dir: { type: 'string' }, port: { type: 'string' } } });
 const root = path.resolve((values.dir ?? process.env.POSTHOLE_DIR ?? '~/posthole').replace(/^~(?=$|\/)/, os.homedir()));
@@ -33,7 +34,7 @@ async function batch(query: URLSearchParams, offset: number) {
     const label = platform === 'linkedin' ? 'LinkedIn' : platform === 'x' ? 'X' : platform === 'bluesky' ? 'Bluesky' : platform === 'threads' ? 'Threads' : platform === 'hackernews' ? 'Hacker News' : 'saved';
     return [<div class="empty"><p>No {label} posts match “{query.get('q')}”.</p><a href={`/?${clear}`}>Clear search</a></div>];
   }
-  const out = await cardsFor(store, list.slice(offset, offset + BATCH), list[offset - 1]?.at ?? null);
+  const out = await cardsFor(store, list.slice(offset, offset + BATCH), list[offset - 1]?.at ?? null, undefined, interfaceOf(query.get('view')));
   const next = offset + BATCH < list.length ? `/cards?${new URLSearchParams([...query, ['offset', String(offset + BATCH)]])}` : null;
   out.push(next ? <div class="more" data-next={next}>Loading…</div> : <div class="end">That's everything you've seen{list.length ? ` · ${list.length} posts` : ''}.</div>);
   return out;
@@ -62,7 +63,7 @@ app.get('/cards', async c => {
 // Saved replies under a post, nested by who replied to whom.
 app.get('/replies', async c => {
   const top = await replyTree(store, c.req.query('key') ?? '');
-  return c.html(top.length ? <ReplyTree nodes={top} /> : <p class="empty">No saved replies.</p>);
+  return c.html(top.length ? <ReplyTree nodes={top} view={interfaceOf(c.req.query('view') ?? null)} /> : <p class="empty">No saved replies.</p>);
 });
 
 // Saved media, with byte ranges so videos can seek.
@@ -86,6 +87,8 @@ const here = import.meta.dir;
 app.get('/style.css', () => new Response(Bun.file(path.join(here, 'style.css'))));
 app.get('/card-interactions.js', () => new Response(Bun.file(path.join(here, 'card-interactions.js'))));
 app.get('/client.js', () => new Response(Bun.file(path.join(here, 'client.js'))));
+app.get('/interfaces.css', () => new Response(Bun.file(path.join(here, 'interfaces.css'))));
+app.get('/interface-controls.js', () => new Response(Bun.file(path.join(here, 'interface-controls.js'))));
 app.get('/icon.png', () => new Response(Bun.file(path.join(here, '..', 'icons', '128.png'))));
 app.get('/assets/:file', async c => {
   const name = c.req.param('file');

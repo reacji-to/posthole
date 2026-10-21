@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { Child } from 'hono/jsx';
 import type { Media, Post, Sighting } from './store';
 import { Icon } from './icons';
+import { INTERFACES, interfaceOf, isPlayer, type Interface } from './interfaces';
 
 export const PLATFORMS: Record<string, { label: string; short: string }> = {
   x: { label: 'X', short: 'X' },
@@ -168,11 +169,11 @@ function Header({ post, folder, quote = false }: { post: Post; folder: string; q
   </header>;
 }
 
-function Copy({ post }: { post: Post }) {
+function Copy({ post, expandable = false }: { post: Post; expandable?: boolean }) {
   if (!post.text) return null;
   const preview = displayOf(post).preview_text;
   const truncated = post.platform === 'x' && preview && preview !== post.text;
-  const clamp = post.platform === 'linkedin' && post.text.length > 180;
+  const clamp = (post.platform === 'linkedin' || expandable) && post.text.length > 180;
   return <div class={`copy${clamp ? ' clamp' : ''}`}>
     <p class="text" dir="auto" data-preview>{<Linked text={truncated ? preview : post.text} post={post} />}</p>
     {truncated && <p class="text" dir="auto" data-full hidden><Linked text={post.text} post={post} /></p>}
@@ -180,10 +181,10 @@ function Copy({ post }: { post: Post }) {
   </div>;
 }
 
-function Body({ post, folder }: { post: Post; folder: string }) {
+function Body({ post, folder, expandable = false }: { post: Post; folder: string; expandable?: boolean }) {
   return <>
     {post.title && <h3 class="title">{post.title}</h3>}
-    <Copy post={post} />
+    <Copy post={post} expandable={expandable} />
     <Gallery media={post.media} folder={folder} />
     <LinkCard post={post} folder={folder} />
     {post.media.filter(m => m.type === 'document').map(m => <a class="doc" href={source(folder, m.file, m.url)} target="_blank" rel="noreferrer">View document</a>)}
@@ -192,7 +193,29 @@ function Body({ post, folder }: { post: Post; folder: string }) {
 
 // ---- cards ----------------------------------------------------------------------------
 
-export type CardData = { post: Post; folder: string; sighting?: Sighting; quoted?: { post: Post; folder: string } | null; saved: number; key: string; repliesHref?: string | null };
+export type CardData = { post: Post; folder: string; sighting?: Sighting; quoted?: { post: Post; folder: string } | null; saved: number; key: string; archiveKey?: string; repliesHref?: string | null; view?: Interface };
+
+// Alternative interfaces keep the real source identity and links. Nothing here
+// changes a post's platform or pretends its saved engagement belongs to another site.
+function InterfaceCard({ post, folder, quoted, saved, archiveKey, repliesHref, view }: CardData) {
+  const key = archiveKey ?? post.key ?? `${post.platform}:${post.id}`;
+  const label = post.title || post.text.split('\n').find(Boolean) || post.link_card?.title || 'Media post';
+  const byline = <div class="interface-author"><Avatar post={post} folder={folder} /><div><a class="interface-name" href={post.author.url ?? post.url} target="_blank" rel="noreferrer">{post.author.name || post.author.handle || 'Unknown'}</a><span>{PLATFORMS[post.platform]?.label ?? post.platform}{post.created_at && <> · {dateOnly.format(new Date(post.created_at))}</>}</span></div><a class="original-link" href={post.url} target="_blank" rel="noreferrer">Original ↗</a></div>;
+  const content = <div class="interface-content"><Body post={post} folder={folder} expandable />
+    {quoted && <blockquote class="interface-quote"><strong>{quoted.post.author.name || quoted.post.author.handle}</strong><Body post={quoted.post} folder={quoted.folder} expandable /></blockquote>}
+    {post.quote_of && !quoted && <a href={post.quote_of.url} target="_blank" rel="noreferrer">View quoted post ↗</a>}
+  </div>;
+  return <section class="post-entry interface-entry" data-key={key} data-title={label.slice(0, 100)}>
+    <article class="interface-card" aria-label={`${PLATFORMS[post.platform]?.label ?? post.platform} post by ${post.author.name || post.author.handle}`}>
+      {view === 'hackernews' ? <><div class="story-heading"><span class="story-rank" /><details><summary>{label.slice(0, 220)}{label.length > 220 ? '…' : ''}<span class="story-domain"> ({host(post.url)})</span></summary>{byline}{content}</details></div><div class="story-meta">{post.metrics.score ?? post.metrics.likes ?? 0} {post.metrics.score != null ? 'points' : 'likes'} by {post.author.name || post.author.handle} · {PLATFORMS[post.platform]?.label} · <a href={post.url} target="_blank" rel="noreferrer">original</a></div></> : <>{byline}{content}</>}
+      <div class="interface-bottom">
+        {view !== 'hackernews' && <span>{post.metrics.likes != null ? `${compact.format(post.metrics.likes)} likes` : 'Saved post'}{post.metrics.replies != null ? ` · ${compact.format(post.metrics.replies)} replies` : ''}</span>}
+        {saved > 0 && <button class="replies-toggle" aria-expanded="false" data-href={repliesHref ?? `/replies?key=${encodeURIComponent(key)}&view=${view}`}>Show {saved} saved replies</button>}
+        {saved > 0 && <div class="replies" hidden />}
+      </div>
+    </article>
+  </section>;
+}
 
 function HNCard({ post }: { post: Post }) {
   const story = post.kind === 'story';
@@ -207,7 +230,9 @@ function HNCard({ post }: { post: Post }) {
   </div>;
 }
 
-export function Card({ post, folder, sighting, quoted, saved, key, repliesHref }: CardData) {
+export function Card({ post, folder, sighting, quoted, saved, archiveKey, repliesHref, view = 'original' }: CardData) {
+  const key = archiveKey ?? post.key ?? `${post.platform}:${post.id}`;
+  if (view !== 'original') return <InterfaceCard {...{ post, folder, sighting, quoted, saved, key, archiveKey: key, repliesHref, view }} />;
   const replyingTo = post.reply_to?.author_handle;
   return <section class={`post-entry ${post.platform}`} data-key={key}>
     <article class={`card ${post.platform}`} aria-label={`${PLATFORMS[post.platform]?.label ?? post.platform} post by ${post.author.name ?? post.author.handle}`}>
@@ -245,13 +270,13 @@ export function Divider({ sighting }: { sighting: Sighting }) {
 
 export type ReplyNode = { data: CardData; children: ReplyNode[] };
 
-export function ReplyTree({ nodes, depth = 0 }: { nodes: ReplyNode[]; depth?: number }): Child {
+export function ReplyTree({ nodes, depth = 0, view = 'original' }: { nodes: ReplyNode[]; depth?: number; view?: Interface }): Child {
   return (
     <ol class="tree" data-depth={depth}>
       {nodes.map(node => (
         <li>
-          <Card {...node.data} saved={0} />
-          {node.children.length > 0 && <ReplyTree nodes={node.children} depth={depth + 1} />}
+          <Card {...node.data} archiveKey={node.data.key} saved={0} view={view} />
+          {node.children.length > 0 && <ReplyTree nodes={node.children} depth={depth + 1} view={view} />}
         </li>
       ))}
     </ol>
@@ -261,6 +286,8 @@ export function ReplyTree({ nodes, depth = 0 }: { nodes: ReplyNode[]; depth?: nu
 // ---- page --------------------------------------------------------------------------------
 
 export function Page({ children, counts, total, query }: { children: Child; counts: Record<string, number>; total: number; query: URLSearchParams }) {
+  const view = interfaceOf(query.get('view'));
+  const player = isPlayer(view);
   const active = new Set(query.getAll('p'));
   const order = query.get('order') === 'recent' ? 'recent' : 'seen';
   const href = (change: (q: URLSearchParams) => void) => {
@@ -277,8 +304,9 @@ export function Page({ children, counts, total, query }: { children: Child; coun
         <title>posthole</title>
         <link rel="icon" href="/icon.png" />
         <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/interfaces.css" />
       </head>
-      <body>
+      <body data-view={view}>
         <nav class="bar">
           <a class="brand" href="/"><img src="/icon.png" alt="" />posthole</a>
           <div class="filters">
@@ -288,6 +316,7 @@ export function Page({ children, counts, total, query }: { children: Child; coun
             ))}
           </div>
           <form class="search" action="/">
+            <input type="hidden" name="view" value={view} />
             {[...active].map(p => <input type="hidden" name="p" value={p} />)}
             {order === 'recent' && <input type="hidden" name="order" value="recent" />}
             <input type="search" name="q" value={query.get('q') ?? ''} placeholder="Search" aria-label="Search posts" />
@@ -296,11 +325,36 @@ export function Page({ children, counts, total, query }: { children: Child; coun
             {order === 'recent' ? 'Newest first' : 'In order seen'}
           </a>
         </nav>
-        <main class="feed">{children}</main>
+        <div class="interface-toolbar"><form action="/" class="interface-picker">
+          {[...query].filter(([key]) => key !== 'view').map(([key, value]) => <input type="hidden" name={key} value={value} />)}
+          <label for="interface-select">Interface</label><select id="interface-select" name="view" aria-label="Interface">{Object.entries(INTERFACES).map(([id, info]) => <option value={id} selected={id === view}>{info.label}</option>)}</select><button class="apply-view" type="submit">Switch</button>
+        </form><span class="interface-description">{INTERFACES[view].description}</span>{view === 'tinder' && <button class="kept-filter" aria-pressed="false">Kept posts <b data-kept-count>0</b></button>}</div>
+        <div class="viewer-layout">
+          {(view === 'x' || view === 'linkedin') && <aside class="feed-sidebar"><strong>{view === 'x' ? 'Your timeline.' : 'Your reading room.'}</strong><p>Everything you saved.<br />In a different light.</p><a href={href(q => { q.delete('p'); q.delete('q'); })}>All posts</a><span>posthole / {INTERFACES[view].label}</span></aside>}
+          {view === 'hackernews' && <div class="hn-masthead"><b>p</b><strong>Posthole News</strong><span>your saved internet</span></div>}
+          <div class={player ? 'ipod-shell' : view === 'tinder' ? 'swipe-shell' : 'feed-shell'}>
+            {player && <div class="ipod-top"><strong>posthole</strong><span data-position>Now reading</span><svg viewBox="0 0 28 14" width="26" height="14" aria-label="Archive available"><rect x="1" y="1" width="22" height="12" rx="2" fill="none" stroke="currentColor"/><path d="M24 4h3v6h-3zM4 4h16v6H4z" fill="currentColor"/></svg></div>}
+            {view === 'tinder' && <div class="swipe-heading"><strong>A good post is worth keeping.</strong><span data-position /></div>}
+            <main class="feed" tabindex={player ? 0 : undefined} aria-label="Saved posts">{children}</main>
+            {player && <><div class="ipod-list" hidden aria-label="Post menu" /><div class="click-wheel" aria-label="Archive click wheel">
+              <button class="wheel-menu" data-deck="menu" aria-label="Toggle post menu">MENU</button>
+              <button class="wheel-prev" data-deck="previous" aria-label="Previous post"><Transport direction="previous" /></button>
+              <button class="wheel-center" data-deck="select" aria-label="Read selected post" />
+              <button class="wheel-next" data-deck="next" aria-label="Next post"><Transport direction="next" /></button>
+              <button class="wheel-play" data-deck="play" aria-label="Play or pause media"><svg viewBox="0 0 24 24"><path d="m4 5 9 7-9 7zM17 5v14M21 5v14" fill="currentColor" stroke="currentColor" stroke-width="2" /></svg></button>
+            </div><p class="player-help">Use the wheel or ← → to browse</p></>}
+            {view === 'tinder' && <div class="swipe-controls"><button data-deck="previous" aria-label="Previous post"><svg viewBox="0 0 24 24"><path d="M9 5 3 11l6 6M3 11h11a7 7 0 0 1 7 7" /></svg></button><button data-deck="next" class="skip-post" aria-label="Skip post"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button><button data-deck="keep" class="keep-post" aria-label="Keep post"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" /></svg></button></div>}
+          </div>
+          {(player || view === 'tinder') && <p class="deck-status" role="status" aria-live="polite" />}
+        </div>
         <script src="/client.js" type="module" />
       </body>
     </html>
   );
+}
+
+function Transport({ direction }: { direction: 'previous' | 'next' }) {
+  return <svg viewBox="0 0 24 24" aria-hidden="true" style={direction === 'previous' ? 'transform:rotate(180deg)' : ''}><path d="m3 5 9 7-9 7zm9 0 9 7-9 7z" fill="currentColor" /></svg>;
 }
 
 // The static site's shell: cards arrive as chunk files listed in chunks.json.

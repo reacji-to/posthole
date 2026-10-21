@@ -1,20 +1,36 @@
 import { initCardInteractions } from './card-interactions.js';
-// Infinite scroll and reply threads. Cards arrive as server-rendered HTML.
+import { initInterfaceControls } from './interface-controls.js';
 const feed = document.querySelector('.feed');
-
-const loadMore = new IntersectionObserver(async entries => {
-  for (const entry of entries) {
-    if (!entry.isIntersecting) continue;
-    const marker = entry.target;
-    loadMore.unobserve(marker);
-    const html = await (await fetch(marker.dataset.next)).text();
-    marker.insertAdjacentHTML('afterend', html);
-    marker.remove();
-    watch();
-  }
+const deck = ['ipod', 'ipod-color', 'tinder'].includes(document.body.dataset.view);
+let pending;
+async function loadNext() {
+  if (pending) return pending;
+  const marker = feed.querySelector('.more[data-next]');
+  if (!marker) return false;
+  loadMore.unobserve(marker);
+  pending = (async () => {
+    try {
+      const response = await fetch(marker.dataset.next);
+      if (!response.ok) throw new Error('Request failed');
+      marker.insertAdjacentHTML('afterend', await response.text());
+      marker.remove();
+      watch();
+      return true;
+    } catch {
+      marker.replaceChildren();
+      const retry = document.createElement('button');
+      retry.type = 'button'; retry.textContent = 'Couldn’t load posts · retry';
+      retry.addEventListener('click', () => loadNext());
+      marker.append(retry);
+      return false;
+    } finally { pending = null; }
+  })();
+  return pending;
+}
+const loadMore = new IntersectionObserver(entries => {
+  if (entries.some(entry => entry.isIntersecting)) loadNext();
 }, { rootMargin: '1200px' });
-
-const watch = () => document.querySelectorAll('.more[data-next]').forEach(el => loadMore.observe(el));
+function watch() { if (!deck) feed.querySelectorAll('.more[data-next]').forEach(el => loadMore.observe(el)); }
 watch();
-
 initCardInteractions(feed);
+initInterfaceControls(feed, loadNext);

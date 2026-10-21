@@ -75,3 +75,35 @@ test('old source records recover note previews; static builds invalidate obsolet
     expect(JSON.parse(await readFile(path.join(out, 'state.json'), 'utf8')).total).toBe(1);
   } finally { await rm(root, { recursive: true, force: true }); }
 });
+
+import { Page } from './views';
+import { INTERFACES, interfaceOf } from './interfaces';
+for (const view of Object.keys(INTERFACES)) {
+  test(`${view}: presentation preserves source, media, escaped text and reply lookup`, () => {
+    const post = sample('linkedin');
+    post.media = [{ type:'video', file:'01.mp4',url:null,thumbnail_file:'01-thumb.jpg',thumbnail_url:null,alt:null,width:800,height:600,duration_ms:2000 }];
+    const { document } = parseHTML(String(<Card post={post} folder="linkedin/123" key="linkedin:123" archiveKey="linkedin:123" saved={2} view={interfaceOf(view)} />));
+    expect(document.querySelector('script')).toBeNull();
+    expect(document.querySelector('video')?.getAttribute('src')).toBe('/files/linkedin/123/01.mp4');
+    expect(document.querySelector('.text')?.textContent).toContain('<script>alert(1)</script>');
+    const toggle = document.querySelector('.replies-toggle');
+    expect(toggle?.nextElementSibling?.className).toBe('replies');
+    expect(toggle?.getAttribute('data-href')).toContain('linkedin%3A123');
+    if (view !== 'original') {
+      expect(document.querySelector('.interface-author')?.textContent).toContain('LinkedIn');
+      expect(document.querySelector('.original-link')?.getAttribute('href')).toBe(post.url);
+    }
+  });
+}
+test('interface selection keeps search, order and source filters independent', () => {
+  const query = new URLSearchParams('view=ipod-color&p=linkedin&q=hello&order=recent');
+  const { document } = parseHTML(String(<Page counts={{x:3,linkedin:2}} total={5} query={query}>posts</Page>));
+  expect(document.body.dataset.view).toBe('ipod-color');
+  expect(document.querySelector('.search [name=view]')?.getAttribute('value')).toBe('ipod-color');
+  expect(document.querySelector('.interface-picker [name=q]')?.getAttribute('value')).toBe('hello');
+  expect(document.querySelector('.interface-picker [name=p]')?.getAttribute('value')).toBe('linkedin');
+  expect(document.querySelector('.interface-picker [name=order]')?.getAttribute('value')).toBe('recent');
+  expect(document.querySelectorAll('.click-wheel button').length).toBe(5);
+  expect(interfaceOf('__proto__')).toBe('original');
+  expect(interfaceOf('<script>')).toBe('original');
+});

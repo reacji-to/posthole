@@ -3,6 +3,7 @@
 import { reacjiKey } from '../src/schema.js';
 import { keyOf, type Sighting, type Store } from './store';
 import { Card, Divider, type CardData, type ReplyNode } from './views';
+import type { Interface } from './interfaces';
 
 export const SESSION_GAP = 20 * 60 * 1000;
 
@@ -18,7 +19,7 @@ export async function cardData(store: Store, key: string, sighting?: Sighting): 
 }
 
 // Cards for a run of sightings, with a divider wherever a new browsing session starts.
-export async function cardsFor(store: Store, list: Sighting[], previousAt: string | null, repliesHref?: (key: string) => string) {
+export async function cardsFor(store: Store, list: Sighting[], previousAt: string | null, repliesHref?: (key: string) => string, view: Interface = 'original') {
   const datas = await Promise.all(list.map(s => cardData(store, keyOf(s), s)));
   const out: any[] = [];
   let last = previousAt;
@@ -26,7 +27,7 @@ export async function cardsFor(store: Store, list: Sighting[], previousAt: strin
     if (!last || Math.abs(Date.parse(s.at) - Date.parse(last)) > SESSION_GAP) out.push(<Divider sighting={s} />);
     last = s.at;
     const data = datas[i];
-    if (data) out.push(<Card {...data} repliesHref={repliesHref?.(data.key)} />);
+    if (data) out.push(<Card {...data} archiveKey={data.key} repliesHref={repliesHref?.(data.key)} view={view} />);
   });
   return out;
 }
