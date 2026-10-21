@@ -200,12 +200,20 @@ export type CardData = { post: Post; folder: string; sighting?: Sighting; quoted
 function InterfaceCard({ post, folder, quoted, saved, archiveKey, repliesHref, view }: CardData) {
   const key = archiveKey ?? post.key ?? `${post.platform}:${post.id}`;
   const label = post.title || post.text.split('\n').find(Boolean) || post.link_card?.title || 'Media post';
+  const visualPost = post.media.some(m => m.type !== 'document') ? { post, folder } : quoted ?? { post, folder };
+  const cover = visualPost.post.media.find(m => m.type === 'video' || m.type === 'gif') ?? visualPost.post.media.find(m => m.type === 'image');
+  const video = cover?.type === 'video' || cover?.type === 'gif';
+  const poster = cover ? source(visualPost.folder, video ? cover.thumbnail_file : cover.file, video ? cover.thumbnail_url : cover.url) : source(folder, post.link_card?.image_file ?? null, post.link_card?.image_url ?? null);
   const byline = <div class="interface-author"><Avatar post={post} folder={folder} /><div><a class="interface-name" href={post.author.url ?? post.url} target="_blank" rel="noreferrer">{post.author.name || post.author.handle || 'Unknown'}</a><span>{PLATFORMS[post.platform]?.label ?? post.platform}{post.created_at && <> · {dateOnly.format(new Date(post.created_at))}</>}</span></div><a class="original-link" href={post.url} target="_blank" rel="noreferrer">Original ↗</a></div>;
   const content = <div class="interface-content"><Body post={post} folder={folder} expandable />
     {quoted && <blockquote class="interface-quote"><strong>{quoted.post.author.name || quoted.post.author.handle}</strong><Body post={quoted.post} folder={quoted.folder} expandable /></blockquote>}
     {post.quote_of && !quoted && <a href={post.quote_of.url} target="_blank" rel="noreferrer">View quoted post ↗</a>}
   </div>;
-  return <section class="post-entry interface-entry" data-key={key} data-title={label.slice(0, 100)}>
+  return <section class={`post-entry interface-entry${view === 'netflix' ? ' netflix-entry' : ''}`} data-key={key} data-title={label.slice(0, 160)} data-source={post.platform} data-creator={post.author.name || post.author.handle || 'Unknown'} data-media-kind={video ? 'video' : poster ? 'image' : 'text'}>
+    {view === 'netflix' && <button type="button" class="nf-tile" data-open-post={key} aria-label={`Open post by ${post.author.name || post.author.handle}: ${label.slice(0, 100)}`}>
+      <span class="nf-cover">{poster ? <img src={poster} alt="" loading="lazy" decoding="async" /> : <span class="nf-type-cover">{label.slice(0, 160)}</span>}<span class="nf-badge">{video ? 'VIDEO' : 'POST'}</span><span class="nf-tile-play" aria-hidden="true">{video ? <svg viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z" fill="currentColor"/></svg> : <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2"/></svg>}</span></span>
+      <span class="nf-tile-title">{label.slice(0, 110)}</span><span class="nf-tile-byline">{post.author.name || post.author.handle} · {PLATFORMS[post.platform]?.label}</span>
+    </button>}
     <article class="interface-card" aria-label={`${PLATFORMS[post.platform]?.label ?? post.platform} post by ${post.author.name || post.author.handle}`}>
       {view === 'hackernews' ? <><div class="story-heading"><span class="story-rank" /><details><summary>{label.slice(0, 220)}{label.length > 220 ? '…' : ''}<span class="story-domain"> ({host(post.url)})</span></summary>{byline}{content}</details></div><div class="story-meta">{post.metrics.score ?? post.metrics.likes ?? 0} {post.metrics.score != null ? 'points' : 'likes'} by {post.author.name || post.author.handle} · {PLATFORMS[post.platform]?.label} · <a href={post.url} target="_blank" rel="noreferrer">original</a></div></> : <>{byline}{content}</>}
       <div class="interface-bottom">
@@ -305,6 +313,7 @@ export function Page({ children, counts, total, query }: { children: Child; coun
         <link rel="icon" href="/icon.png" />
         <link rel="stylesheet" href="/style.css" />
         <link rel="stylesheet" href="/interfaces.css" />
+        {view === 'netflix' && <link rel="stylesheet" href="/netflix.css" />}
       </head>
       <body data-view={view}>
         <nav class="bar">

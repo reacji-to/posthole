@@ -1,7 +1,7 @@
 import { initCardInteractions } from './card-interactions.js';
 import { initInterfaceControls } from './interface-controls.js';
 const feed = document.querySelector('.feed');
-const deck = ['ipod', 'ipod-color', 'tinder'].includes(document.body.dataset.view);
+const deck = ['ipod', 'ipod-color', 'tinder', 'netflix'].includes(document.body.dataset.view);
 let pending;
 async function loadNext() {
   if (pending) return pending;
@@ -34,3 +34,7 @@ function watch() { if (!deck) feed.querySelectorAll('.more[data-next]').forEach(
 watch();
 initCardInteractions(feed);
 initInterfaceControls(feed, loadNext);
+if (document.body.dataset.view === 'netflix') {
+  const { initNetflix } = await import('./netflix.js');
+  initNetflix(feed, loadNext);
+}

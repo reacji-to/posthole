@@ -107,3 +107,19 @@ test('interface selection keeps search, order and source filters independent', (
   expect(interfaceOf('__proto__')).toBe('original');
   expect(interfaceOf('<script>')).toBe('original');
 });
+
+test('Netflix uses saved video posters, keeps text-only posts, and escapes tile labels', () => {
+  const post = sample('x');
+  post.text = '<img onerror=alert(1)> Read this';
+  post.media = [{ type:'video',file:'01.mp4',url:null,thumbnail_file:'01-thumb.jpg',thumbnail_url:null,alt:null,width:640,height:360,duration_ms:1000 }];
+  const render = () => parseHTML(String(<Card post={post} folder="x/123" archiveKey="x:123" key="x:123" saved={0} view="netflix" />)).document;
+  let doc = render();
+  expect(doc.querySelector('.nf-cover img')?.getAttribute('src')).toBe('/files/x/123/01-thumb.jpg');
+  expect(doc.querySelector('.nf-tile')?.getAttribute('data-open-post')).toBe('x:123');
+  expect(doc.querySelector('.netflix-entry')?.getAttribute('data-media-kind')).toBe('video');
+  expect(doc.querySelector('[onerror]')).toBeNull();
+  post.media = [];
+  doc = render();
+  expect(doc.querySelector('.nf-type-cover')?.textContent).toBe(post.text);
+  expect(doc.querySelector('.netflix-entry')?.getAttribute('data-media-kind')).toBe('text');
+});

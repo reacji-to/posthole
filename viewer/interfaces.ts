@@ -9,6 +9,7 @@ export const INTERFACES = {
   tinder: { label: 'Swipe', description: 'Skip left. Keep right. Nothing gets deleted.' },
   gallery: { label: 'Gallery', description: 'Pictures first. Follow your eye.' },
   terminal: { label: 'Terminal', description: 'Just the feed, straight to stdout.' },
+  netflix: { label: 'Netflix', description: 'Something good is always next.' },
 } as const;
 export type Interface = keyof typeof INTERFACES;
 export function interfaceOf(value: string | null): Interface {
