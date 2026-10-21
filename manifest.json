@@ -1,0 +1,84 @@
+{
+  "manifest_version": 3,
+  "name": "posthole",
+  "version": "0.3.0",
+  "description": "Saves every post you scroll past on X, LinkedIn, Bluesky, Threads and Hacker News to a local folder.",
+  "minimum_chrome_version": "120",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YhKbuoJ65+oGjZDfwj/kE7ioUo6dmPS/kbSG59kumY6gEStPVnvBApn8vXgERS9eCGF2lQpWDEknW0xFBsPmSQNnlqk9iGTmARAu3MhZdr+ZdGUr36Pd2NZnBn0lK+bDakTiPPVG1T2cD3oGUQqpHUcSxVSBdIm7WPFKlF9xhqoR8CTV6Sh/rcSRcjFe9T2HPOswjlb8mNDoFoYsfeQGQUHYZ8Z8jWN+RHq6gdaGJkXZarjNYrtKKgzr9wPe+FNSNICe9SWySiebRDlC9/msOImBJcp0pm7dBu4IVlzhLX2CeJ3xTWlCef/Qm1axJnzc4sBF/aGxp/eXDYY0bqe+QIDAQAB",
+  "permissions": [
+    "storage",
+    "nativeMessaging",
+    "alarms",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "https://*.linkedin.com/*",
+    "https://bsky.app/*",
+    "https://*.threads.com/*",
+    "https://*.threads.net/*",
+    "https://news.ycombinator.com/*",
+    "https://*.twimg.com/*",
+    "https://*.bsky.app/*",
+    "https://*.bsky.network/*",
+    "https://plc.directory/*",
+    "https://*.cdninstagram.com/*",
+    "https://*.fbcdn.net/*",
+    "https://*.licdn.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://*.linkedin.com/*",
+        "https://bsky.app/*",
+        "https://*.threads.com/*",
+        "https://*.threads.net/*"
+      ],
+      "js": [
+        "hook.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://*.linkedin.com/*",
+        "https://bsky.app/*",
+        "https://*.threads.com/*",
+        "https://*.threads.net/*",
+        "https://news.ycombinator.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_title": "posthole",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
+}

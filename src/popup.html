@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>posthole</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand"><img src="icons/32.png" alt=""><h1>posthole</h1></div>
+    <label class="switch"><input type="checkbox" id="recording"> <span id="recording-label">Saving</span></label>
+  </header>
+  <p id="where" class="where muted"></p>
+  <ul id="counts" class="counts"></ul>
+  <p id="assets" class="muted"></p>
+  <div id="last" class="last" hidden></div>
+  <p id="problem" class="error" hidden></p>
+  <footer>
+    <button id="open" class="primary">Open folder</button>
+    <button id="settings">Settings</button>
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>

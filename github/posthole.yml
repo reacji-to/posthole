@@ -1,0 +1,144 @@
+# Installed by posthole. Every 15 minutes: append the posts saved since the last run to
+# the card site, index and embed them into posthole.sqlite, and publish to GitHub Pages.
+# The site's files live on the `posthole-site` branch as a single commit (no history).
+# posthole.sqlite is attached to the `posthole-index` release (git rejects files over 100 MB).
+name: posthole site
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      rebuild:
+        description: Regenerate every card (after a change to how cards render)
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: posthole-site
+  cancel-in-progress: false
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Check out post records (no media)
+        uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /index/
+            /.posthole/
+            /*/*/post.json
+            /*/*/source.json
+
+      - name: Check out the site built so far
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          if git ls-remote --exit-code --heads "$url" posthole-site >/dev/null; then
+            git clone --quiet --depth 1 --branch posthole-site --single-branch "$url" site
+          else
+            mkdir site && git -C site init --quiet && git -C site remote add origin "$url"
+          fi
+
+      - name: Choose where media is served from
+        id: media
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Public repositories serve saved media straight from this branch. The site can't read a
+          # private repository, so it gets its own resized copies of the images it shows.
+          if [ "$(gh api "repos/${{ github.repository }}" --jq .private)" = "false" ]; then
+            echo "args=--media-base https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/" >> "$GITHUB_OUTPUT"
+          else
+            echo "args=--copy-media" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Append new posts to the site
+        id: site
+        run: |
+          (cd .posthole/viewer && bun install --frozen-lockfile)
+          bun .posthole/viewer/build-static.tsx --dir . --out site \
+            --db-url "https://github.com/${{ github.repository }}/releases/download/posthole-index/posthole.sqlite" \
+            ${{ steps.media.outputs.args }} ${{ inputs.rebuild && '--rebuild' || '' }}
+
+      - name: Save the site
+        if: steps.site.outputs.changed == 'true'
+        working-directory: site
+        run: |
+          git config user.name posthole
+          git config user.email posthole@users.noreply.github.com
+          git checkout --quiet --orphan snapshot
+          git add -A
+          git commit --quiet -m "posthole site $(date -u +%FT%TZ)"
+          git push --quiet --force origin HEAD:posthole-site
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.site.outputs.changed == 'true'
+        with:
+          path: site
+
+      - id: deploy
+        if: steps.site.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4
+
+      - name: Check the embedding backlog
+        id: backlog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Embedding has a time budget per run, so posts can be waiting even when nothing new arrived.
+          mkdir -p db
+          gh release download posthole-index --pattern posthole.sqlite --dir db 2>/dev/null || true
+          pending=0
+          if [ -f db/posthole.sqlite ]; then
+            pending=$(sqlite3 db/posthole.sqlite "SELECT count(*) FROM posts WHERE embed_hash IS NOT NULL AND (embedded_hash IS NULL OR embedded_hash != embed_hash)" 2>/dev/null || echo 0)
+          fi
+          echo "pending=$pending" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@v5
+        if: steps.site.outputs.changed == 'true' || steps.backlog.outputs.pending != '0'
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: .posthole/requirements.txt
+
+      - name: Cache the embedding model
+        if: steps.site.outputs.changed == 'true' || steps.backlog.outputs.pending != '0'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('.posthole/embed.py') }}
+
+      - name: Index and embed posts
+        id: embed
+        if: steps.site.outputs.changed == 'true' || steps.backlog.outputs.pending != '0'
+        timeout-minutes: 15
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pip install --quiet -r .posthole/requirements.txt
+          python .posthole/embed.py --dir . --db db/posthole.sqlite
+
+      - name: Publish posthole.sqlite
+        if: always() && (steps.site.outputs.changed == 'true' || steps.backlog.outputs.pending != '0') && hashFiles('db/posthole.sqlite') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view posthole-index >/dev/null 2>&1 || gh release create posthole-index --title "posthole index" --latest=false \
+            --notes "posthole.sqlite: every saved post (keyed like reacji.to), full-text search, and embeddings. Updated every 15 minutes."
+          gh release upload posthole-index db/posthole.sqlite --clobber

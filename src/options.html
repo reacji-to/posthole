@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>posthole settings</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <header class="brand"><img src="icons/48.png" alt=""><h1>posthole</h1></header>
+    <p class="muted lede">Saves every post you scroll past on X, LinkedIn, Bluesky, Threads and Hacker News as a JSON record, together with its images and video.</p>
+
+    <section>
+      <h2>Save folder</h2>
+      <div class="row">
+        <input type="text" id="root" spellcheck="false" aria-label="Save folder">
+        <button id="choose">Choose…</button>
+        <button id="open">Open</button>
+      </div>
+      <p id="host" class="muted"></p>
+    </section>
+
+    <section>
+      <h2>Sites</h2>
+      <div id="platforms" class="checks"></div>
+      <label class="check sub"><input type="checkbox" id="hnComments"> Hacker News comments on item pages</label>
+    </section>
+
+    <section>
+      <h2>Files</h2>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="images"> Images and documents</label>
+        <label class="check"><input type="checkbox" id="videos"> Videos and GIFs</label>
+        <label class="check"><input type="checkbox" id="avatars"> Author avatars</label>
+        <label class="check"><input type="checkbox" id="keepSource"> Keep the original source data (<code>source.json</code>)</label>
+      </div>
+      <label class="inline">Skip files larger than <input type="number" id="maxAssetMB" min="1" step="1"> MB</label>
+    </section>
+
+    <section>
+      <h2>Reply threads</h2>
+      <label class="check"><input type="checkbox" id="fetchThreads"> Fetch the replies to every post, even ones you don't open</label>
+      <label class="inline">Follow replies to replies <input type="number" id="threadDepth" min="1" max="10" step="1"> levels deep</label>
+      <label class="inline">Load up to <input type="number" id="threadPages" min="1" max="100" step="1"> pages of replies per post</label>
+      <p class="muted">Uses each site's own API with your signed-in session, spaced out to stay under its rate limits. X and LinkedIn may limit accounts that read very large volumes.</p>
+      <p id="threads" class="muted"></p>
+    </section>
+
+    <section>
+      <h2>GitHub</h2>
+      <label class="check"><input type="checkbox" id="gitSync"> Commit and push the save folder when it is a git repository</label>
+      <p class="muted">Every 5 minutes, new saves are committed and pushed to <code>origin</code>, and a workflow is installed that publishes the card site (with a SQLite index and embeddings) to GitHub Pages every 15 minutes. Files over 100&nbsp;MB stay on this computer.</p>
+      <p id="git" class="muted"></p>
+      <button id="syncNow">Sync now</button>
+    </section>
+
+    <section>
+      <h2>Raw archive</h2>
+      <label class="check"><input type="checkbox" id="archiveRaw"> Keep every API response and page exactly as received (<code>raw/</code>, gzipped)</label>
+      <p class="muted">With this, everything posthole saw can be re-parsed or rebuilt later.</p>
+    </section>
+
+    <section>
+      <h2>This session</h2>
+      <p id="session" class="muted"></p>
+      <ol id="errors" class="errors"></ol>
+      <button id="reset">Reset counters</button>
+    </section>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>

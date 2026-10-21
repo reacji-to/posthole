@@ -1,0 +1,16 @@
+{
+  "name": "posthole-viewer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun server.tsx",
+    "dev": "bun --hot server.tsx"
+  },
+  "dependencies": {
+    "hono": "^4.13.13",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.3"
+  }
+}

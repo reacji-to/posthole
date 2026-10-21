@@ -1,0 +1,8 @@
+node_modules/
+dist/
+host/posthole-host
+test-results/
+playwright-report/
+.DS_Store
+release/
+website/

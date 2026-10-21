@@ -1,0 +1,745 @@
+{
+ "data": {
+  "home": {
+   "home_timeline_urt": {
+    "instructions": [
+     {
+      "type": "TimelineAddEntries",
+      "entries": [
+       {
+        "entryId": "tweet-1001",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "Tweet",
+            "rest_id": "1001",
+            "core": {
+             "user_results": {
+              "result": {
+               "__typename": "User",
+               "rest_id": "11",
+               "core": {
+                "name": "Ada Lovelace",
+                "screen_name": "ada",
+                "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+               },
+               "avatar": {
+                "image_url": "https://pbs.twimg.com/profile_images/1/ada_normal.jpg"
+               },
+               "is_blue_verified": true,
+               "legacy": {
+                "description": "bio",
+                "followers_count": 10
+               }
+              }
+             }
+            },
+            "views": {
+             "count": "1000",
+             "state": "EnabledWithCount"
+            },
+            "legacy": {
+             "id_str": "1001",
+             "user_id_str": "11",
+             "conversation_id_str": "1001",
+             "lang": "en",
+             "favorite_count": 10,
+             "retweet_count": 2,
+             "reply_count": 1,
+             "quote_count": 0,
+             "bookmark_count": 3,
+             "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+             "entities": {
+              "hashtags": [
+               {
+                "text": "engines"
+               }
+              ],
+              "user_mentions": [
+               {
+                "screen_name": "charles",
+                "id_str": "12"
+               }
+              ],
+              "urls": [
+               {
+                "url": "https://t.co/abc",
+                "expanded_url": "https://example.com/notes",
+                "display_url": "example.com/notes"
+               }
+              ],
+              "media": [
+               {
+                "url": "https://t.co/pic1",
+                "media_url_https": "https://pbs.twimg.com/media/PHOTO1.jpg",
+                "type": "photo"
+               }
+              ]
+             },
+             "full_text": "Notes on #engines with @charles &amp; friends https://t.co/abc https://t.co/pic1",
+             "display_text_range": [
+              0,
+              62
+             ],
+             "extended_entities": {
+              "media": [
+               {
+                "url": "https://t.co/pic1",
+                "type": "photo",
+                "media_url_https": "https://pbs.twimg.com/media/PHOTO1.jpg",
+                "ext_alt_text": "A difference engine",
+                "original_info": {
+                 "width": 1200,
+                 "height": 800
+                }
+               }
+              ]
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "entryId": "tweet-1002",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "Tweet",
+            "rest_id": "1002",
+            "core": {
+             "user_results": {
+              "result": {
+               "__typename": "User",
+               "rest_id": "12",
+               "core": {
+                "name": "Charles Babbage",
+                "screen_name": "charles",
+                "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+               },
+               "avatar": {
+                "image_url": "https://pbs.twimg.com/profile_images/2/charles_normal.jpg"
+               },
+               "is_blue_verified": true,
+               "legacy": {
+                "description": "bio",
+                "followers_count": 10
+               }
+              }
+             }
+            },
+            "views": {
+             "count": "1000",
+             "state": "EnabledWithCount"
+            },
+            "legacy": {
+             "id_str": "1002",
+             "user_id_str": "12",
+             "conversation_id_str": "1002",
+             "lang": "en",
+             "favorite_count": 1,
+             "retweet_count": 0,
+             "reply_count": 0,
+             "quote_count": 0,
+             "bookmark_count": 0,
+             "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+             "entities": {
+              "hashtags": [],
+              "urls": [],
+              "user_mentions": []
+             },
+             "full_text": "RT @grace: It is easier to ask forgiveness than permission.",
+             "retweeted_status_result": {
+              "result": {
+               "__typename": "Tweet",
+               "rest_id": "900",
+               "core": {
+                "user_results": {
+                 "result": {
+                  "__typename": "User",
+                  "rest_id": "13",
+                  "legacy": {
+                   "screen_name": "grace",
+                   "name": "Grace Hopper",
+                   "profile_image_url_https": "https://pbs.twimg.com/profile_images/3/grace_normal.png",
+                   "created_at": "Mon Jan 01 00:00:00 +0000 2010",
+                   "verified": false
+                  }
+                 }
+                }
+               },
+               "views": {
+                "count": "1000",
+                "state": "EnabledWithCount"
+               },
+               "legacy": {
+                "id_str": "900",
+                "user_id_str": "13",
+                "conversation_id_str": "900",
+                "lang": "en",
+                "favorite_count": 500,
+                "retweet_count": 90,
+                "reply_count": 0,
+                "quote_count": 0,
+                "bookmark_count": 0,
+                "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+                "entities": {
+                 "hashtags": [],
+                 "urls": [],
+                 "user_mentions": []
+                },
+                "full_text": "It is easier to ask forgiveness than permission.",
+                "display_text_range": [
+                 0,
+                 48
+                ]
+               }
+              }
+             },
+             "display_text_range": [
+              0,
+              59
+             ]
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "entryId": "tweet-1003",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "Tweet",
+            "rest_id": "1003",
+            "core": {
+             "user_results": {
+              "result": {
+               "__typename": "User",
+               "rest_id": "11",
+               "core": {
+                "name": "Ada Lovelace",
+                "screen_name": "ada",
+                "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+               },
+               "avatar": {
+                "image_url": "https://pbs.twimg.com/profile_images/1/ada_normal.jpg"
+               },
+               "is_blue_verified": true,
+               "legacy": {
+                "description": "bio",
+                "followers_count": 10
+               }
+              }
+             }
+            },
+            "views": {
+             "count": "1000",
+             "state": "EnabledWithCount"
+            },
+            "legacy": {
+             "id_str": "1003",
+             "user_id_str": "11",
+             "conversation_id_str": "1003",
+             "lang": "en",
+             "favorite_count": 1,
+             "retweet_count": 0,
+             "reply_count": 0,
+             "quote_count": 0,
+             "bookmark_count": 0,
+             "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+             "entities": {
+              "hashtags": [],
+              "user_mentions": [],
+              "urls": []
+             },
+             "full_text": "This is the clearest explanation https://t.co/q",
+             "display_text_range": [
+              0,
+              32
+             ],
+             "quoted_status_id_str": "800",
+             "quoted_status_permalink": {
+              "expanded": "https://x.com/lin/status/800"
+             }
+            },
+            "quoted_status_result": {
+             "result": {
+              "__typename": "Tweet",
+              "rest_id": "800",
+              "core": {
+               "user_results": {
+                "result": {
+                 "__typename": "User",
+                 "rest_id": "14",
+                 "core": {
+                  "name": "Lin Clark",
+                  "screen_name": "lin",
+                  "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+                 },
+                 "avatar": {
+                  "image_url": "https://pbs.twimg.com/profile_images/4/lin_normal.jpg"
+                 },
+                 "is_blue_verified": true,
+                 "legacy": {
+                  "description": "bio",
+                  "followers_count": 10
+                 }
+                }
+               }
+              },
+              "views": {
+               "count": "1000",
+               "state": "EnabledWithCount"
+              },
+              "legacy": {
+               "id_str": "800",
+               "user_id_str": "14",
+               "conversation_id_str": "800",
+               "lang": "en",
+               "favorite_count": 1,
+               "retweet_count": 0,
+               "reply_count": 0,
+               "quote_count": 0,
+               "bookmark_count": 0,
+               "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+               "entities": {
+                "hashtags": [],
+                "urls": [],
+                "user_mentions": []
+               },
+               "full_text": "Watch this https://t.co/vid",
+               "display_text_range": [
+                0,
+                10
+               ],
+               "extended_entities": {
+                "media": [
+                 {
+                  "url": "https://t.co/vid",
+                  "type": "video",
+                  "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/800/img/THUMB.jpg",
+                  "original_info": {
+                   "width": 1280,
+                   "height": 720
+                  },
+                  "video_info": {
+                   "duration_millis": 15000,
+                   "variants": [
+                    {
+                     "content_type": "application/x-mpegURL",
+                     "url": "https://video.twimg.com/amplify_video/800/pl/playlist.m3u8"
+                    },
+                    {
+                     "bitrate": 256000,
+                     "content_type": "video/mp4",
+                     "url": "https://video.twimg.com/amplify_video/800/vid/avc1/480x270/low.mp4"
+                    },
+                    {
+                     "bitrate": 2176000,
+                     "content_type": "video/mp4",
+                     "url": "https://video.twimg.com/amplify_video/800/vid/avc1/1280x720/high.mp4"
+                    }
+                   ]
+                  }
+                 }
+                ]
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "entryId": "tweet-1004",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "TweetWithVisibilityResults",
+            "tweet": {
+             "__typename": "Tweet",
+             "rest_id": "1004",
+             "core": {
+              "user_results": {
+               "result": {
+                "__typename": "User",
+                "rest_id": "14",
+                "core": {
+                 "name": "Lin Clark",
+                 "screen_name": "lin",
+                 "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+                },
+                "avatar": {
+                 "image_url": "https://pbs.twimg.com/profile_images/4/lin_normal.jpg"
+                },
+                "is_blue_verified": true,
+                "legacy": {
+                 "description": "bio",
+                 "followers_count": 10
+                }
+               }
+              }
+             },
+             "views": {
+              "count": "1000",
+              "state": "EnabledWithCount"
+             },
+             "legacy": {
+              "id_str": "1004",
+              "user_id_str": "14",
+              "conversation_id_str": "1004",
+              "lang": "en",
+              "favorite_count": 1,
+              "retweet_count": 0,
+              "reply_count": 0,
+              "quote_count": 0,
+              "bookmark_count": 0,
+              "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+              "entities": {
+               "hashtags": [],
+               "urls": [],
+               "user_mentions": []
+              },
+              "full_text": "A long post. A long post. A long post… https://t.co/note",
+              "display_text_range": [
+               0,
+               56
+              ]
+             },
+             "note_tweet": {
+              "is_expandable": true,
+              "note_tweet_results": {
+               "result": {
+                "text": "A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. A long post. See https://t.co/more",
+                "entity_set": {
+                 "hashtags": [],
+                 "user_mentions": [],
+                 "urls": [
+                  {
+                   "url": "https://t.co/more",
+                   "expanded_url": "https://example.com/more",
+                   "display_url": "example.com/more"
+                  }
+                 ]
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "entryId": "promoted-tweet-1005",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "Tweet",
+            "rest_id": "1005",
+            "core": {
+             "user_results": {
+              "result": {
+               "__typename": "User",
+               "rest_id": "12",
+               "core": {
+                "name": "Charles Babbage",
+                "screen_name": "charles",
+                "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+               },
+               "avatar": {
+                "image_url": "https://pbs.twimg.com/profile_images/2/charles_normal.jpg"
+               },
+               "is_blue_verified": true,
+               "legacy": {
+                "description": "bio",
+                "followers_count": 10
+               }
+              }
+             }
+            },
+            "views": {
+             "count": "1000",
+             "state": "EnabledWithCount"
+            },
+            "legacy": {
+             "id_str": "1005",
+             "user_id_str": "12",
+             "conversation_id_str": "1005",
+             "lang": "en",
+             "favorite_count": 1,
+             "retweet_count": 0,
+             "reply_count": 0,
+             "quote_count": 0,
+             "bookmark_count": 0,
+             "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+             "entities": {
+              "hashtags": [],
+              "urls": [],
+              "user_mentions": []
+             },
+             "full_text": "Buy our engine!",
+             "display_text_range": [
+              0,
+              15
+             ]
+            }
+           }
+          },
+          "promotedMetadata": {
+           "advertiser_results": {}
+          }
+         }
+        }
+       },
+       {
+        "entryId": "tweet-1006",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "Tweet",
+            "rest_id": "1006",
+            "core": {
+             "user_results": {
+              "result": {
+               "__typename": "User",
+               "rest_id": "12",
+               "core": {
+                "name": "Charles Babbage",
+                "screen_name": "charles",
+                "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+               },
+               "avatar": {
+                "image_url": "https://pbs.twimg.com/profile_images/2/charles_normal.jpg"
+               },
+               "is_blue_verified": true,
+               "legacy": {
+                "description": "bio",
+                "followers_count": 10
+               }
+              }
+             }
+            },
+            "views": {
+             "count": "1000",
+             "state": "EnabledWithCount"
+            },
+            "legacy": {
+             "id_str": "1006",
+             "user_id_str": "12",
+             "conversation_id_str": "1001",
+             "lang": "en",
+             "favorite_count": 1,
+             "retweet_count": 0,
+             "reply_count": 0,
+             "quote_count": 0,
+             "bookmark_count": 0,
+             "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+             "entities": {
+              "hashtags": [],
+              "user_mentions": [
+               {
+                "screen_name": "ada"
+               }
+              ],
+              "urls": [
+               {
+                "url": "https://t.co/card1",
+                "expanded_url": "https://blog.example.org/post",
+                "display_url": "blog.example.org/post"
+               }
+              ]
+             },
+             "full_text": "@ada Great read https://t.co/card1",
+             "display_text_range": [
+              5,
+              34
+             ],
+             "in_reply_to_status_id_str": "1001",
+             "in_reply_to_screen_name": "ada"
+            },
+            "card": {
+             "rest_id": "https://t.co/card1",
+             "legacy": {
+              "name": "summary_large_image",
+              "url": "https://t.co/card1",
+              "binding_values": [
+               {
+                "key": "title",
+                "value": {
+                 "string_value": "A blog post",
+                 "type": "STRING"
+                }
+               },
+               {
+                "key": "description",
+                "value": {
+                 "string_value": "About engines",
+                 "type": "STRING"
+                }
+               },
+               {
+                "key": "domain",
+                "value": {
+                 "string_value": "blog.example.org",
+                 "type": "STRING"
+                }
+               },
+               {
+                "key": "card_url",
+                "value": {
+                 "string_value": "https://t.co/card1",
+                 "type": "STRING"
+                }
+               },
+               {
+                "key": "summary_photo_image_original",
+                "value": {
+                 "image_value": {
+                  "url": "https://pbs.twimg.com/card_img/1/CARD?format=jpg&name=orig",
+                  "width": 1200,
+                  "height": 630
+                 },
+                 "type": "IMAGE"
+                }
+               }
+              ]
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "entryId": "tweet-1007",
+        "content": {
+         "entryType": "TimelineTimelineItem",
+         "itemContent": {
+          "itemType": "TimelineTweet",
+          "tweet_results": {
+           "result": {
+            "__typename": "Tweet",
+            "rest_id": "1007",
+            "core": {
+             "user_results": {
+              "result": {
+               "__typename": "User",
+               "rest_id": "11",
+               "core": {
+                "name": "Ada Lovelace",
+                "screen_name": "ada",
+                "created_at": "Mon Jan 01 00:00:00 +0000 2010"
+               },
+               "avatar": {
+                "image_url": "https://pbs.twimg.com/profile_images/1/ada_normal.jpg"
+               },
+               "is_blue_verified": true,
+               "legacy": {
+                "description": "bio",
+                "followers_count": 10
+               }
+              }
+             }
+            },
+            "views": {
+             "count": "1000",
+             "state": "EnabledWithCount"
+            },
+            "legacy": {
+             "id_str": "1007",
+             "user_id_str": "11",
+             "conversation_id_str": "1007",
+             "lang": "en",
+             "favorite_count": 1,
+             "retweet_count": 0,
+             "reply_count": 0,
+             "quote_count": 0,
+             "bookmark_count": 0,
+             "created_at": "Tue Oct 20 18:00:00 +0000 2026",
+             "entities": {
+              "hashtags": [],
+              "user_mentions": [],
+              "urls": [
+               {
+                "url": "https://t.co/art",
+                "expanded_url": "https://x.com/i/article/A1",
+                "display_url": "x.com/i/article/A1"
+               }
+              ]
+             },
+             "full_text": "https://t.co/art",
+             "display_text_range": [
+              0,
+              16
+             ]
+            },
+            "article": {
+             "article_results": {
+              "result": {
+               "rest_id": "A1",
+               "title": "On Engines",
+               "preview_text": "A preview",
+               "cover_media": {
+                "media_info": {
+                 "original_img_url": "https://pbs.twimg.com/media/COVER.jpg",
+                 "original_img_width": 1600,
+                 "original_img_height": 900
+                }
+               },
+               "content_state": {
+                "blocks": [
+                 {
+                  "text": "First paragraph."
+                 },
+                 {
+                  "text": "Second paragraph."
+                 }
+                ]
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "entryId": "cursor-bottom",
+        "content": {
+         "entryType": "TimelineTimelineCursor",
+         "value": "abc"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

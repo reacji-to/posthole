@@ -1,0 +1,25 @@
+{
+  "name": "posthole",
+  "version": "0.3.0",
+  "description": "Helium/Chrome extension that saves every post you scroll past on X, LinkedIn, Bluesky, Threads and Hacker News to a local folder.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "test": "node --test tests/*.test.js",
+    "test:e2e": "npm run build && playwright test",
+    "install-host": "node scripts/install-host.mjs",
+    "icons": "node scripts/icons.mjs",
+    "rebuild": "node scripts/rebuild.mjs",
+    "test:viewer": "bun test ./viewer/viewer.test.tsx",
+    "package": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "esbuild": "^0.28.2",
+    "linkedom": "^0.18.12",
+    "sharp": "^0.35.5"
+  }
+}

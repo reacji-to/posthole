@@ -1,0 +1,379 @@
+{
+ "data": {
+  "data": {
+   "feedDashMainFeedByMainFeed": {
+    "*elements": [
+     "urn:li:fsd_update:(urn:li:activity:7254000000000000001,MAIN_FEED,EMPTY,DEFAULT,false)",
+     "urn:li:fsd_update:(urn:li:activity:7254000000000000002,MAIN_FEED,EMPTY,DEFAULT,false)",
+     "urn:li:fsd_update:(urn:li:activity:7254000000000000003,MAIN_FEED,EMPTY,DEFAULT,false)",
+     "urn:li:fsd_update:(urn:li:activity:7254000000000000004,MAIN_FEED,EMPTY,DEFAULT,false)"
+    ]
+   }
+  }
+ },
+ "included": [
+  {
+   "$type": "com.linkedin.voyager.dash.feed.Update",
+   "entityUrn": "urn:li:fsd_update:(urn:li:activity:7254000000000000001,MAIN_FEED,EMPTY,DEFAULT,false)",
+   "metadata": {
+    "backendUrn": "urn:li:activity:7254000000000000001",
+    "shareUrn": "urn:li:share:7254000000000000001"
+   },
+   "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:activity:7254000000000000001,urn:li:activity:7254000000000000001,urn:li:highlightedReply:-)",
+   "actor": {
+    "name": {
+     "text": "Ada Lovelace"
+    },
+    "description": {
+     "text": "Analyst"
+    },
+    "subDescription": {
+     "text": "3h • Edited • "
+    },
+    "navigationContext": {
+     "actionTarget": "https://www.linkedin.com/in/ada?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACo"
+    },
+    "backendUrn": "urn:li:member:3",
+    "image": {
+     "attributes": [
+      {
+       "detailData": {
+        "nonEntityProfilePicture": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 100,
+            "height": 100,
+            "fileIdentifyingUrlPathSegment": "avatar-ada/100?e=1799999999&v=beta&t=tok"
+           },
+           {
+            "width": 800,
+            "height": 800,
+            "fileIdentifyingUrlPathSegment": "avatar-ada/800?e=1799999999&v=beta&t=tok"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "commentary": {
+    "text": {
+     "text": "Shipping the new engine today. Thanks Charles Babbage #engines",
+     "attributesV2": [
+      {
+       "start": 38,
+       "length": 15,
+       "detailData": {
+        "*profileFullName": "urn:li:fsd_profile:ACo12"
+       }
+      },
+      {
+       "start": 54,
+       "length": 8,
+       "detailData": {
+        "*hashtag": "urn:li:fsd_hashtag:engines"
+       }
+      }
+     ]
+    }
+   },
+   "content": {
+    "imageComponent": {
+     "images": [
+      {
+       "accessibilityText": "Engine photo",
+       "attributes": [
+        {
+         "detailData": {
+          "vectorImage": {
+           "rootUrl": "https://media.licdn.com/dms/image/v2/",
+           "artifacts": [
+            {
+             "width": 480,
+             "height": 480,
+             "fileIdentifyingUrlPathSegment": "photoA/480?e=1799999999&v=beta&t=tok"
+            },
+            {
+             "width": 1280,
+             "height": 1280,
+             "fileIdentifyingUrlPathSegment": "photoA/1280?e=1799999999&v=beta&t=tok"
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.social.SocialDetail",
+   "entityUrn": "urn:li:fsd_socialDetail:(urn:li:activity:7254000000000000001,urn:li:activity:7254000000000000001,urn:li:highlightedReply:-)",
+   "*totalSocialActivityCounts": "urn:li:fsd_socialActivityCounts:urn:li:activity:7254000000000000001"
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.feed.SocialActivityCounts",
+   "entityUrn": "urn:li:fsd_socialActivityCounts:urn:li:activity:7254000000000000001",
+   "numLikes": 42,
+   "numComments": 5,
+   "numShares": 2
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.feed.Update",
+   "entityUrn": "urn:li:fsd_update:(urn:li:activity:7254000000000000002,MAIN_FEED,EMPTY,DEFAULT,false)",
+   "metadata": {
+    "backendUrn": "urn:li:activity:7254000000000000002",
+    "shareUrn": "urn:li:share:7254000000000000002"
+   },
+   "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:activity:7254000000000000002,urn:li:activity:7254000000000000002,urn:li:highlightedReply:-)",
+   "actor": {
+    "name": {
+     "text": "Grace Hopper"
+    },
+    "description": {
+     "text": "Admiral"
+    },
+    "subDescription": {
+     "text": "3h • Edited • "
+    },
+    "navigationContext": {
+     "actionTarget": "https://www.linkedin.com/in/grace?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACo"
+    },
+    "backendUrn": "urn:li:member:5",
+    "image": {
+     "attributes": [
+      {
+       "detailData": {
+        "nonEntityProfilePicture": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 100,
+            "height": 100,
+            "fileIdentifyingUrlPathSegment": "avatar-grace/100?e=1799999999&v=beta&t=tok"
+           },
+           {
+            "width": 800,
+            "height": 800,
+            "fileIdentifyingUrlPathSegment": "avatar-grace/800?e=1799999999&v=beta&t=tok"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "commentary": {
+    "text": {
+     "text": "Nanoseconds, explained",
+     "attributesV2": []
+    }
+   },
+   "content": {
+    "linkedInVideoComponent": {
+     "*videoPlayMetadata": "urn:li:digitalmediaAsset:VID"
+    }
+   }
+  },
+  {
+   "$type": "com.linkedin.videocontent.VideoPlayMetadata",
+   "entityUrn": "urn:li:digitalmediaAsset:VID",
+   "duration": 61000,
+   "thumbnail": {
+    "rootUrl": "https://media.licdn.com/dms/image/v2/",
+    "artifacts": [
+     {
+      "width": 640,
+      "height": 640,
+      "fileIdentifyingUrlPathSegment": "thumbB/640?e=1799999999&v=beta&t=tok"
+     }
+    ]
+   },
+   "progressiveStreams": [
+    {
+     "width": 640,
+     "height": 360,
+     "mediaType": "video/mp4",
+     "streamingLocations": [
+      {
+       "url": "https://dms.licdn.com/playlist/vid/v2/B/mp4-640p?e=1&t=x"
+      }
+     ]
+    },
+    {
+     "width": 1280,
+     "height": 720,
+     "mediaType": "video/mp4",
+     "streamingLocations": [
+      {
+       "url": "https://dms.licdn.com/playlist/vid/v2/B/mp4-720p?e=1&t=x"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.feed.Update",
+   "entityUrn": "urn:li:fsd_update:(urn:li:activity:7254000000000000003,MAIN_FEED,EMPTY,DEFAULT,false)",
+   "metadata": {
+    "backendUrn": "urn:li:activity:7254000000000000003",
+    "shareUrn": "urn:li:share:7254000000000000003"
+   },
+   "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:activity:7254000000000000003,urn:li:activity:7254000000000000003,urn:li:highlightedReply:-)",
+   "actor": {
+    "name": {
+     "text": "Charles Babbage"
+    },
+    "description": {
+     "text": "Inventor"
+    },
+    "subDescription": {
+     "text": "3h • Edited • "
+    },
+    "navigationContext": {
+     "actionTarget": "https://www.linkedin.com/in/charles?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACo"
+    },
+    "backendUrn": "urn:li:member:7",
+    "image": {
+     "attributes": [
+      {
+       "detailData": {
+        "nonEntityProfilePicture": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 100,
+            "height": 100,
+            "fileIdentifyingUrlPathSegment": "avatar-charles/100?e=1799999999&v=beta&t=tok"
+           },
+           {
+            "width": 800,
+            "height": 800,
+            "fileIdentifyingUrlPathSegment": "avatar-charles/800?e=1799999999&v=beta&t=tok"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "commentary": {
+    "text": {
+     "text": "Worth reading",
+     "attributesV2": []
+    }
+   },
+   "content": {
+    "articleComponent": {
+     "title": {
+      "text": "The Analytical Engine"
+     },
+     "subtitle": {
+      "text": "engines.example.org"
+     },
+     "navigationContext": {
+      "actionTarget": "https://engines.example.org/analytical"
+     },
+     "largeImage": {
+      "attributes": [
+       {
+        "detailData": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 800,
+            "height": 800,
+            "fileIdentifyingUrlPathSegment": "articleC/800?e=1799999999&v=beta&t=tok"
+           }
+          ]
+         }
+        }
+       }
+      ]
+     }
+    }
+   },
+   "resharedUpdate": {
+    "$type": "com.linkedin.voyager.dash.feed.Update",
+    "entityUrn": "urn:li:fsd_update:(urn:li:activity:7254000000000000001,MAIN_FEED,EMPTY,DEFAULT,false)",
+    "metadata": {
+     "backendUrn": "urn:li:activity:7254000000000000001",
+     "shareUrn": "urn:li:share:7254000000000000001"
+    },
+    "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:activity:7254000000000000001,urn:li:activity:7254000000000000001,urn:li:highlightedReply:-)"
+   }
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.feed.Update",
+   "entityUrn": "urn:li:fsd_update:(urn:li:activity:7254000000000000004,MAIN_FEED,EMPTY,DEFAULT,false)",
+   "metadata": {
+    "backendUrn": "urn:li:activity:7254000000000000004",
+    "trackingData": {
+     "sponsoredTracking": {
+      "adUrn": "x"
+     }
+    }
+   },
+   "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:activity:7254000000000000004,urn:li:activity:7254000000000000004,urn:li:highlightedReply:-)",
+   "actor": {
+    "name": {
+     "text": "Engine Co"
+    },
+    "description": {
+     "text": "Company"
+    },
+    "subDescription": {
+     "text": "Promoted"
+    },
+    "navigationContext": {
+     "actionTarget": "https://www.linkedin.com/in/engineco?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACo"
+    },
+    "backendUrn": "urn:li:member:8",
+    "image": {
+     "attributes": [
+      {
+       "detailData": {
+        "nonEntityProfilePicture": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 100,
+            "height": 100,
+            "fileIdentifyingUrlPathSegment": "avatar-engineco/100?e=1799999999&v=beta&t=tok"
+           },
+           {
+            "width": 800,
+            "height": 800,
+            "fileIdentifyingUrlPathSegment": "avatar-engineco/800?e=1799999999&v=beta&t=tok"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "commentary": {
+    "text": {
+     "text": "Buy now",
+     "attributesV2": []
+    }
+   }
+  }
+ ]
+}

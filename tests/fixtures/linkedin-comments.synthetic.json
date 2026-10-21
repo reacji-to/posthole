@@ -1,0 +1,122 @@
+{
+ "data": {
+  "data": {
+   "socialDashCommentsBySocialDetail": {
+    "*elements": [
+     "urn:li:fsd_comment:(7254000000000000101,urn:li:activity:7254000000000000001)"
+    ],
+    "paging": {
+     "count": 10,
+     "start": 0,
+     "total": 1
+    }
+   }
+  }
+ },
+ "included": [
+  {
+   "$type": "com.linkedin.voyager.dash.social.Comment",
+   "entityUrn": "urn:li:fsd_comment:(7254000000000000101,urn:li:activity:7254000000000000001)",
+   "urn": "urn:li:comment:(activity:7254000000000000001,7254000000000000101)",
+   "commentary": {
+    "text": "Congrats!",
+    "attributesV2": []
+   },
+   "createdAt": 1729500000000,
+   "commenter": {
+    "title": {
+     "text": "Grace Hopper"
+    },
+    "subtitle": "Admiral",
+    "navigationContext": {
+     "actionTarget": "https://www.linkedin.com/in/grace?miniProfileUrn=x"
+    },
+    "image": {
+     "attributes": [
+      {
+       "detailData": {
+        "nonEntityProfilePicture": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 100,
+            "height": 100,
+            "fileIdentifyingUrlPathSegment": "avatar-grace/100?e=1&t=x"
+           },
+           {
+            "width": 400,
+            "height": 400,
+            "fileIdentifyingUrlPathSegment": "avatar-grace/400?e=1&t=x"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "permalink": "https://www.linkedin.com/feed/update/urn:li:activity:7254000000000000001?commentUrn=urn%3Ali%3Acomment%3A(activity%3A7254000000000000001%2C7254000000000000101)",
+   "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:comment:(activity:7254000000000000001,7254000000000000101),urn:li:comment:(activity:7254000000000000001,7254000000000000101),urn:li:highlightedReply:-)"
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.social.SocialDetail",
+   "entityUrn": "urn:li:fsd_socialDetail:(urn:li:comment:(activity:7254000000000000001,7254000000000000101),urn:li:comment:(activity:7254000000000000001,7254000000000000101),urn:li:highlightedReply:-)",
+   "*totalSocialActivityCounts": "urn:li:fsd_socialActivityCounts:urn:li:comment:(activity:7254000000000000001,7254000000000000101)"
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.feed.SocialActivityCounts",
+   "entityUrn": "urn:li:fsd_socialActivityCounts:urn:li:comment:(activity:7254000000000000001,7254000000000000101)",
+   "numLikes": 3,
+   "numComments": 1
+  },
+  {
+   "$type": "com.linkedin.voyager.dash.social.Comment",
+   "entityUrn": "urn:li:fsd_comment:(7254000000000000102,urn:li:activity:7254000000000000001)",
+   "urn": "urn:li:comment:(activity:7254000000000000001,7254000000000000102)",
+   "commentary": {
+    "text": "Thank you!",
+    "attributesV2": []
+   },
+   "createdAt": 1729500000000,
+   "commenter": {
+    "title": {
+     "text": "Ada Lovelace"
+    },
+    "subtitle": "Admiral",
+    "navigationContext": {
+     "actionTarget": "https://www.linkedin.com/in/ada?miniProfileUrn=x"
+    },
+    "image": {
+     "attributes": [
+      {
+       "detailData": {
+        "nonEntityProfilePicture": {
+         "vectorImage": {
+          "rootUrl": "https://media.licdn.com/dms/image/v2/",
+          "artifacts": [
+           {
+            "width": 100,
+            "height": 100,
+            "fileIdentifyingUrlPathSegment": "avatar-ada/100?e=1&t=x"
+           },
+           {
+            "width": 400,
+            "height": 400,
+            "fileIdentifyingUrlPathSegment": "avatar-ada/400?e=1&t=x"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "permalink": "https://www.linkedin.com/feed/update/urn:li:activity:7254000000000000001?commentUrn=urn%3Ali%3Acomment%3A(activity%3A7254000000000000001%2C7254000000000000102)",
+   "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:comment:(activity:7254000000000000001,7254000000000000102),urn:li:comment:(activity:7254000000000000001,7254000000000000102),urn:li:highlightedReply:-)",
+   "parentCommentUrn": "urn:li:comment:(activity:7254000000000000001,7254000000000000101)"
+  }
+ ]
+}
