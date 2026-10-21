@@ -309,7 +309,7 @@ export function Page({ children, counts, total, query }: { children: Child; coun
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>posthole</title>
+        <title>{view === 'netflix' ? 'Postflix — posthole' : 'posthole'}</title>
         <link rel="icon" href="/icon.png" />
         <link rel="stylesheet" href="/style.css" />
         <link rel="stylesheet" href="/interfaces.css" />
@@ -317,7 +317,7 @@ export function Page({ children, counts, total, query }: { children: Child; coun
       </head>
       <body data-view={view}>
         <nav class="bar">
-          <a class="brand" href="/"><img src="/icon.png" alt="" />posthole</a>
+          <a class="brand" href="/"><img src="/icon.png" alt="" />{view === 'netflix' ? 'Postflix' : 'posthole'}</a>
           <div class="filters">
             <a class={active.size ? 'chip' : 'chip on'} href={href(q => q.delete('p'))}>All <b>{total}</b></a>
             {Object.entries(PLATFORMS).filter(([p]) => counts[p]).map(([p, info]) => (

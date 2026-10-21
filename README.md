@@ -62,11 +62,11 @@ A local site with a card for every post you scrolled past, in the order you saw 
 cd viewer && bun install && bun start   # http://localhost:4747  (--dir to read another save folder)
 ```
 
-Use the **Interface** menu to read the same archive ten ways: original site cards, Hacker News, X, LinkedIn, iPod classic, iPod color, Swipe, Gallery, Terminal, or Netflix. The interface is independent of the source filter: you can read LinkedIn posts in the Hacker News view, for example. Search, ordering, saved media, quotes, and reply threads keep working. Your choice is remembered in this browser, and `?view=ipod-color` (or another interface ID) makes a direct link.
+Use the **Interface** menu to read the same archive ten ways: original site cards, Hacker News, X, LinkedIn, iPod classic, iPod color, Swipe, Gallery, Terminal, or Postflix. The interface is independent of the source filter: you can read LinkedIn posts in the Hacker News view, for example. Search, ordering, saved media, quotes, and reply threads keep working. Your choice is remembered in this browser, and `?view=ipod-color` (or another interface ID) makes a direct link.
 
 - **iPod:** next/previous buttons, arrow keys, or scrolling on the click wheel move between posts. MENU opens the post list; the center button returns to reading. Play/pause controls the current post's video, or scrolls a text post. The classic screen applies a black-and-white filter to images and videos.
 - **Swipe:** swipe left to skip or right to keep, or use the on-screen buttons. **Kept posts** filters the deck to your keeps; the heart can also remove a keep. These are stored only in this browser, not in the archive, and never like or delete a post on its source site.
-- **Netflix:** browse a featured post and horizontal rows of videos, images, and posts from each source. Play a saved video or open its detail panel to read the full post and replies. Load more posts to expand the catalogue.
+- **Postflix:** browse a featured post and horizontal rows of videos, images, and posts from each source. Play a saved video or open its detail panel to read the full post and replies. Load more posts to expand the catalogue.
 - **Hacker News:** open a headline to read its full saved post and media. **Gallery** puts media first; **Terminal** uses a compact monospace reading surface.
 
 These interfaces are available in the local server. Generated static archive sites retain the original source-specific cards.
