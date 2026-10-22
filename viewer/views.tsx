@@ -296,6 +296,8 @@ export function ReplyTree({ nodes, depth = 0, view = 'original' }: { nodes: Repl
 export function Page({ children, counts, total, query }: { children: Child; counts: Record<string, number>; total: number; query: URLSearchParams }) {
   const view = interfaceOf(query.get('view'));
   const player = isPlayer(view);
+  const title = player ? INTERFACES[view].label : view === 'netflix' ? 'Postflix' : 'posthole';
+  const feed = <main class="feed" tabindex={player ? 0 : undefined} aria-label="Saved posts">{children}</main>;
   const active = new Set(query.getAll('p'));
   const order = query.get('order') === 'recent' ? 'recent' : 'seen';
   const href = (change: (q: URLSearchParams) => void) => {
@@ -309,7 +311,7 @@ export function Page({ children, counts, total, query }: { children: Child; coun
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{view === 'netflix' ? 'Postflix — posthole' : 'posthole'}</title>
+        <title>{title === 'posthole' ? title : `${title} — posthole`}</title>
         <link rel="icon" href="/icon.png" />
         <link rel="stylesheet" href="/style.css" />
         <link rel="stylesheet" href="/interfaces.css" />
@@ -317,7 +319,7 @@ export function Page({ children, counts, total, query }: { children: Child; coun
       </head>
       <body data-view={view}>
         <nav class="bar">
-          <a class="brand" href="/"><img src="/icon.png" alt="" />{view === 'netflix' ? 'Postflix' : 'posthole'}</a>
+          <a class="brand" href="/"><img src="/icon.png" alt="" />{player ? 'Postpod' : view === 'netflix' ? 'Postflix' : 'posthole'}</a>
           <div class="filters">
             <a class={active.size ? 'chip' : 'chip on'} href={href(q => q.delete('p'))}>All <b>{total}</b></a>
             {Object.entries(PLATFORMS).filter(([p]) => counts[p]).map(([p, info]) => (
@@ -342,18 +344,22 @@ export function Page({ children, counts, total, query }: { children: Child; coun
           {(view === 'x' || view === 'linkedin') && <aside class="feed-sidebar"><strong>{view === 'x' ? 'Your timeline.' : 'Your reading room.'}</strong><p>Everything you saved.<br />In a different light.</p><a href={href(q => { q.delete('p'); q.delete('q'); })}>All posts</a><span>posthole / {INTERFACES[view].label}</span></aside>}
           {view === 'hackernews' && <div class="hn-masthead"><b>p</b><strong>Posthole News</strong><span>your saved internet</span></div>}
           <div class={player ? 'ipod-shell' : view === 'tinder' ? 'swipe-shell' : 'feed-shell'}>
-            {player && <div class="ipod-top"><strong>posthole</strong><span data-position>Now reading</span><svg viewBox="0 0 28 14" width="26" height="14" aria-label="Archive available"><rect x="1" y="1" width="22" height="12" rx="2" fill="none" stroke="currentColor"/><path d="M24 4h3v6h-3zM4 4h16v6H4z" fill="currentColor"/></svg></div>}
             {view === 'tinder' && <div class="swipe-heading"><strong>A good post is worth keeping.</strong><span data-position /></div>}
-            <main class="feed" tabindex={player ? 0 : undefined} aria-label="Saved posts">{children}</main>
-            {player && <><div class="ipod-list" hidden aria-label="Post menu" /><div class="click-wheel" aria-label="Archive click wheel">
+            {player ? <div class="ipod-screen">
+              <div class="ipod-top"><strong>Postpod</strong><span data-position>Now reading</span><svg viewBox="0 0 28 14" width="26" height="14" aria-label="Archive available"><rect x="1" y="1" width="22" height="12" rx="2" fill="none" stroke="currentColor"/><path d="M24 4h3v6h-3zM4 4h16v6H4z" fill="currentColor"/></svg></div>
+              {feed}
+              <div class="ipod-list" hidden aria-label="Post menu" />
+            </div> : feed}
+            {player && <div class="click-wheel" aria-label="Archive click wheel">
               <button class="wheel-menu" data-deck="menu" aria-label="Toggle post menu">MENU</button>
               <button class="wheel-prev" data-deck="previous" aria-label="Previous post"><Transport direction="previous" /></button>
               <button class="wheel-center" data-deck="select" aria-label="Read selected post" />
               <button class="wheel-next" data-deck="next" aria-label="Next post"><Transport direction="next" /></button>
               <button class="wheel-play" data-deck="play" aria-label="Play or pause media"><svg viewBox="0 0 24 24"><path d="m4 5 9 7-9 7zM17 5v14M21 5v14" fill="currentColor" stroke="currentColor" stroke-width="2" /></svg></button>
-            </div><p class="player-help">Use the wheel or ← → to browse</p></>}
+            </div>}
             {view === 'tinder' && <div class="swipe-controls"><button data-deck="previous" aria-label="Previous post"><svg viewBox="0 0 24 24"><path d="M9 5 3 11l6 6M3 11h11a7 7 0 0 1 7 7" /></svg></button><button data-deck="next" class="skip-post" aria-label="Skip post"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button><button data-deck="keep" class="keep-post" aria-label="Keep post"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" /></svg></button></div>}
           </div>
+          {player && <p class="player-help">Use the wheel or ← → to browse</p>}
           {(player || view === 'tinder') && <p class="deck-status" role="status" aria-live="polite" />}
         </div>
         <script src="/client.js" type="module" />
