@@ -10,6 +10,10 @@ async function render(status) {
   if (status.error) { $('problem').hidden = false; $('problem').textContent = status.error; return; }
   renderAutoScroll(status.autoScroll, status.settings);
   const { settings, stats, queue } = status;
+  $('save-threads').checked = settings.fetchThreads;
+  $('thread-limits').textContent = settings.fetchThreads
+    ? `Queues posts with known replies. Up to ${settings.threadPages} pages per thread, ${settings.threadDepth} reply levels. Continues after scrolling stops; sites may limit what can be saved.`
+    : 'Reply fetching is off. Feed posts will still be saved.';
   $('recording').checked = !settings.paused;
   $('recording-label').textContent = settings.paused ? 'Paused' : 'Saving';
   $('where').textContent = `Saving to ${settings.root}`;
@@ -43,6 +47,12 @@ $('recording').addEventListener('change', async event => {
   await saveSettings({ paused: !event.target.checked });
   refresh();
 });
+$('save-threads').addEventListener('change', async event => {
+  const input = event.target; input.disabled = true;
+  try { await saveSettings({fetchThreads:input.checked}); await refresh(); }
+  catch { $('scroll-error').textContent = 'Couldn’t save the reply setting. Try again.'; $('scroll-error').hidden = false; }
+  finally { input.disabled = false; }
+});
 $('open').addEventListener('click', () => chrome.runtime.sendMessage({ type: 'openFolder' }));
 $('settings').addEventListener('click', () => chrome.runtime.openOptionsPage());
 
@@ -56,7 +66,7 @@ function renderAutoScroll(run = {}, settings) {
     const seconds = Math.max(0, Math.ceil((run.endsAt - Date.now()) / 1000));
     $('scroll-status').textContent = `${run.title} · ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} left · ${run.steps} scrolls`;
   } else {
-    $('scroll-status').textContent = run.reason || (!platform ? 'Open X, LinkedIn, Bluesky, Threads, or Hacker News to start.' : 'Keep the browser open. Background scrolling may slow down.');
+    $('scroll-status').textContent = run.reason || (!platform ? 'Open X, LinkedIn, Bluesky, Threads, or Hacker News to start.' : 'Varied scrolls and pauses. Keep the browser open; background scrolling may slow down.');
   }
 }
 async function changeScroll(message) {

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createAutoScroller, scrollStep } from '../src/auto-scroll.js';
+import { createAutoScroller, scrollStep, nextScrollPace } from '../src/auto-scroll.js';
 
 function fixture() {
   let time = 100000;
@@ -14,7 +14,7 @@ function fixture() {
     alarms: {create:async name => alarms.add(name),clear:async name => alarms.delete(name),onAlarm:event()},
     scripting: {executeScript:async request => {executions.push(request);return [{result:{moved:true}}];}},
   };
-  const scroller = createAutoScroller(api, async () => settings, () => time);
+  const scroller = createAutoScroller(api, async () => settings, () => time, () => .5);
   return {scroller, api, executions, updates, tab, settings, alarms, advance:ms => time+=ms};
 }
 
@@ -24,7 +24,7 @@ test('auto-scroll targets the opted-in inactive tab, stops at deadline and resto
   assert.equal(run.running,true); assert.equal(run.endsAt,220000);
   assert.equal(f.executions[0].target.tabId,42); assert.equal(f.tab.active,false);
   assert.equal(f.tab.autoDiscardable,false);
-  await f.scroller.tick(); assert.equal(f.executions.length,2);
+  f.advance(6000); await f.scroller.tick(); assert.equal(f.executions.length,2);
   f.advance(120000);
   assert.equal((await f.scroller.tick()).running,false);
   assert.equal(f.executions.length,2); assert.equal(f.tab.autoDiscardable,true); assert.equal(f.alarms.size,0);
@@ -52,6 +52,7 @@ test('stalled pages stop after a minute and injection errors restore tab setting
   f.api.scripting.executeScript=async()=>[{result:{moved:false}}];
   f.advance(60000); assert.match((await f.scroller.tick()).reason,/No more/);
   await f.scroller.start(42,5);
+  f.advance(6000);
   f.api.scripting.executeScript=async()=>{throw new Error('No tab');};
   assert.equal((await f.scroller.tick()).running,false); assert.equal(f.tab.autoDiscardable,true);
 });
@@ -59,7 +60,24 @@ test('worker restart resumes the same tab and expired injected steps do nothing'
   const f=fixture(); await f.scroller.start(42,5);
   const restarted=createAutoScroller(f.api,async()=>f.settings,()=>100001);
   assert.equal((await restarted.status()).tabId,42);
-  assert.equal(f.executions.length,2);
+  assert.equal(f.executions.length,1);
   await restarted.stop(); await f.scroller.stop();
   assert.deepEqual(scrollStep(0,'https://x.com/home'),{stopped:'Time is up.'});
+});
+
+test('pacing varies distance and pause length, including occasional longer pauses', () => {
+  const sample = (...values) => nextScrollPace(() => values.shift());
+  assert.deepEqual(sample(0,.5,0),{viewportFraction:.25,delayMs:2000});
+  assert.deepEqual(sample(1,.5,1),{viewportFraction:.9,delayMs:9000});
+  assert.deepEqual(sample(.5,0,.5),{viewportFraction:.575,delayMs:18000});
+});
+test('early alarm wakeups do not shorten random pauses or burst after a delay', async () => {
+  const f=fixture(); const run=await f.scroller.start(42,5);
+  assert.equal(run.nextStepAt,105500);
+  await f.scroller.tick(); assert.equal(f.executions.length,1);
+  f.advance(5500); await f.scroller.tick(); assert.equal(f.executions.length,2);
+  f.advance(25000); await f.scroller.tick(); assert.equal(f.executions.length,3);
+  await f.scroller.tick(); assert.equal(f.executions.length,3);
+  assert.equal(f.executions[0].args[2],.575);
+  await f.scroller.stop();
 });

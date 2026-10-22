@@ -19,3 +19,5 @@ footer { display: flex; gap: 8px; margin-top: 12px; }
 #scroll-start,#scroll-stop{margin-left:auto}#scroll-status{overflow-wrap:anywhere}
 
 footer{flex-wrap:wrap}#check-updates{font-size:11px}#update-status:empty{display:none}
+
+.thread-switch{display:flex;align-items:center;gap:6px;font-size:12px;margin-top:12px}#thread-limits{font-size:11px;line-height:1.5}

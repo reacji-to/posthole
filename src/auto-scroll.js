@@ -1,8 +1,17 @@
 import { platformFor } from './match.js';
 
+// A fresh distance and pause for each step. Longer pauses occur roughly one in six
+// times; all movements stay below one viewport so content is not jumped over.
+export function nextScrollPace(random = Math.random) {
+  const viewportFraction = .25 + random() * .65;
+  const linger = random() < 1 / 6;
+  const delayMs = Math.round(linger ? 12000 + random() * 12000 : 2000 + random() * 7000);
+  return { viewportFraction, delayMs };
+}
+
 // Runs in the target tab's isolated world. No page timers or animation frames:
 // those are throttled when the user switches tabs. Every step checks its deadline.
-export function scrollStep(deadline, expectedUrl) {
+export function scrollStep(deadline, expectedUrl, viewportFraction = .7) {
   if (Date.now() >= deadline) return { stopped: 'Time is up.' };
   if (location.href !== expectedUrl) return { stopped: 'The tab navigated to another page.' };
   const scrolling = document.scrollingElement;
@@ -12,11 +21,11 @@ export function scrollStep(deadline, expectedUrl) {
     if (el.clientHeight > 150 && el.scrollHeight > el.clientHeight + 2 && /auto|scroll/.test(getComputedStyle(el).overflowY)) { target = el; break; }
   }
   const before = target.scrollTop;
-  target.scrollBy({ top: Math.max(200, (target === scrolling ? innerHeight : target.clientHeight) * .7), behavior: 'instant' });
+  target.scrollBy({ top: Math.max(40, (target === scrolling ? innerHeight : target.clientHeight) * Math.max(.25, Math.min(.9, viewportFraction))), behavior: 'instant' });
   return { moved: Math.abs(target.scrollTop - before) > 1 };
 }
 
-export function createAutoScroller(api, loadSettings, now = Date.now) {
+export function createAutoScroller(api, loadSettings, now = Date.now, random = Math.random) {
   const key = 'posthole.autoScroll', alarm = 'posthole-auto-scroll';
   let timer, queue = Promise.resolve();
   const serial = work => { const task = queue.then(work); queue = task.catch(() => {}); return task; };
@@ -32,9 +41,9 @@ export function createAutoScroller(api, loadSettings, now = Date.now) {
     }
     return { ...state, running: false, reason };
   }
-  function schedule() {
+  function schedule(state) {
     clearTimeout(timer);
-    timer = setTimeout(() => tick().catch(() => {}), 5000);
+    timer = setTimeout(() => tick().catch(() => {}), Math.max(0, Math.min(state.nextStepAt, state.endsAt) - now()));
     timer.unref?.();
   }
   async function step() {
@@ -47,14 +56,19 @@ export function createAutoScroller(api, loadSettings, now = Date.now) {
       const tab = await api.tabs.get(state.tabId);
       if (tab.url !== state.url) return stopRun('The tab navigated to another page.');
       if (tab.discarded || tab.frozen) return stopRun('The browser suspended this tab. Open it and start again.');
-      const [execution] = await api.scripting.executeScript({ target: { tabId: state.tabId }, func: scrollStep, args: [state.endsAt, state.url] });
+      // Alarm and timer wakeups may overlap; preserve the sampled pause, including
+      // across worker restarts. Missed steps never become a catch-up burst.
+      if (now() < (state.nextStepAt ?? 0)) { schedule(state); return state; }
+      const pace = nextScrollPace(random);
+      const [execution] = await api.scripting.executeScript({ target: { tabId: state.tabId }, func: scrollStep, args: [state.endsAt, state.url, pace.viewportFraction] });
       const result = execution?.result;
       if (!result) return stopRun('Couldn’t scroll this tab. Reload it and try again.');
       if (result.stopped) return stopRun(result.stopped);
       state.steps += Number(result.moved);
       if (result.moved) state.lastMovedAt = now();
       if (now() - state.lastMovedAt >= 60000) return stopRun('No more scrolling content appeared.');
-      await write(state); schedule(); return state;
+      state.nextStepAt = now() + pace.delayMs;
+      await write(state); schedule(state); return state;
     } catch { return stopRun('Couldn’t scroll this tab. Reload it and try again.'); }
   }
   const tick = () => serial(step);
