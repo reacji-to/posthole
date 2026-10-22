@@ -41,7 +41,6 @@ body[data-view=ipod] .ipod-screen{filter:url(#postpod-monochrome);--pod-screen:#
 .click-wheel button:focus-visible{outline:2px solid #3e4650;outline-offset:2px}.click-wheel button:disabled{opacity:.35;cursor:default}.click-wheel button:hover{color:#1c2027}.click-wheel svg{width:23px;height:23px}
 .click-wheel .wheel-menu{top:3%;left:50%;width:34%;height:25%;transform:translateX(-50%)}.click-wheel .wheel-prev{left:3%;top:50%;width:25%;height:30%;transform:translateY(-50%)}.click-wheel .wheel-next{right:3%;top:50%;width:25%;height:30%;transform:translateY(-50%)}.click-wheel .wheel-play{bottom:3%;left:50%;width:30%;height:25%;transform:translateX(-50%)}
 .click-wheel .wheel-center{left:33%;top:33%;width:34%;height:34%;border-radius:50%;background:linear-gradient(#e5e6e4,#d0d2d1);box-shadow:inset 0 0 0 1px #bfc2c3}.click-wheel button:active{color:#111;background-color:#e2e4e7}
-.player-help{text-align:center;font-size:11px;color:#535c68;margin:22px 16px 0}
 .ipod-list button{display:block;width:100%;text-align:left;border:0;padding:9px 10px;font:700 12px var(--pod-font);color:var(--pod-ink);background:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .ipod-list button[aria-current=true]{background:var(--pod-selection);color:var(--pod-selected-ink)}.ipod-list button:focus-visible{outline:2px solid var(--pod-link);outline-offset:-2px}
 .ipod-menu-empty{padding:14px;font-size:12px;color:var(--pod-muted)}

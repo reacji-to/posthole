@@ -137,6 +137,20 @@ export function initInterfaceControls(feed, loadNext) {
     else show();
     if (stored) say(wasKept ? 'Removed from kept posts. The archive is unchanged.' : 'Kept in this browser.');
   }
+  function playCurrent() {
+    if (busy) return;
+    if (menuOpen) openSelected();
+    const video = current()?.querySelector('video');
+    if (video) {
+      if (video.paused) video.play().catch(() => say('This saved video could not be played.'));
+      else video.pause();
+    } else say('This post has no video.');
+  }
+  function scrollPlayer(direction) {
+    if (busy) return;
+    if (menuOpen) navigate(direction);
+    else feed.scrollBy({top:direction * Math.max(40, Math.min(100, feed.clientHeight * .3)),behavior:'auto'});
+  }
   document.querySelectorAll('[data-deck]').forEach(button => button.addEventListener('click', () => {
     const action = button.dataset.deck;
     if (action === 'next') navigate(1);
@@ -144,12 +158,7 @@ export function initInterfaceControls(feed, loadNext) {
     if (action === 'keep') keepCurrent();
     if (action === 'menu' && !busy) setMenu(true);
     if (action === 'select') openSelected();
-    if (action === 'play') {
-      if (menuOpen) openSelected();
-      const video = current()?.querySelector('video');
-      if (video) { if (video.paused) video.play().catch(() => say('This saved video could not be played.')); else video.pause(); }
-      else { feed.scrollBy({top:180,behavior:'auto'}); say('Scroll to read this post; it has no video.'); }
-    }
+    if (action === 'play') playCurrent();
   }));
   keptButton?.addEventListener('click', async () => {
     if (busy) return;
@@ -159,18 +168,26 @@ export function initInterfaceControls(feed, loadNext) {
     finally { busy = false; show(); feed.scrollTop = 0; }
   });
   document.addEventListener('keydown', event => {
-    if (event.target.closest('input,select,textarea,button:not([data-deck]):not([data-post-index]),a,summary,video,[contenteditable]') || event.altKey || event.metaKey || event.ctrlKey) return;
-    if (event.key === 'ArrowRight' || (menuOpen && event.key === 'ArrowDown')) { event.preventDefault(); navigate(1); }
-    if (event.key === 'ArrowLeft' || (menuOpen && event.key === 'ArrowUp')) { event.preventDefault(); navigate(-1); }
-    if (event.key === 'Escape' && menuOpen) { event.preventDefault(); setMenu(false); }
-    if (event.key === 'Enter' && menuOpen) { event.preventDefault(); openSelected(); }
+    if (event.target.closest('input,select,textarea,button:not([data-deck]):not([data-post-index]),a,summary,[contenteditable]') || event.altKey || event.metaKey || event.ctrlKey) return;
+    if (player) {
+      if (event.key === 'ArrowRight') { event.preventDefault(); if (menuOpen) openSelected(); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); if (!busy) setMenu(true); }
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') { event.preventDefault(); scrollPlayer(event.key === 'ArrowDown' ? 1 : -1); }
+      if (event.key === ' ') { event.preventDefault(); if (!event.repeat) playCurrent(); }
+      if (event.key === 'Escape' && menuOpen) { event.preventDefault(); setMenu(false); }
+      if (event.key === 'Enter' && menuOpen) { event.preventDefault(); openSelected(); }
+      return;
+    }
+    if (event.target.closest('video')) return;
+    if (event.key === 'ArrowRight') { event.preventDefault(); navigate(1); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); navigate(-1); }
   });
   if (player) {
     let lastWheel = 0;
     document.querySelector('.click-wheel').addEventListener('wheel', event => {
       event.preventDefault();
       if (Date.now() - lastWheel < 180 || Math.abs(event.deltaY) < 3) return;
-      lastWheel = Date.now(); navigate(event.deltaY > 0 ? 1 : -1);
+      lastWheel = Date.now(); scrollPlayer(event.deltaY > 0 ? 1 : -1);
     }, {passive:false});
   } else {
     let start;

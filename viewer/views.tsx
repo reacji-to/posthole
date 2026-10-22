@@ -369,7 +369,6 @@ export function Page({ children, counts, total, query }: { children: Child; coun
             </div>}
             {view === 'tinder' && <div class="swipe-controls"><button data-deck="previous" aria-label="Previous post"><svg viewBox="0 0 24 24"><path d="M9 5 3 11l6 6M3 11h11a7 7 0 0 1 7 7" /></svg></button><button data-deck="next" class="skip-post" aria-label="Skip post"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button><button data-deck="keep" class="keep-post" aria-label="Keep post"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" /></svg></button></div>}
           </div>
-          {player && <p class="player-help">Use the wheel or ← → to browse</p>}
           {(player || view === 'tinder') && <p class="deck-status" role="status" aria-live="polite" />}
         </div>
         <script src="/client.js" type="module" />

@@ -4,7 +4,7 @@ export const INTERFACES = {
   hackernews: { label: 'Hacker News', description: 'Headlines, small type, endless rabbit holes.' },
   x: { label: 'X', description: 'A clean, continuous timeline.' },
   linkedin: { label: 'LinkedIn', description: 'A little more room for the whole story.' },
-  ipod: { label: 'Postpod classic', description: 'Your scroll, on shuffle’s older sibling. Black and white.' },
+  ipod: { label: 'Postpod classic', description: '' },
   'ipod-color': { label: 'Postpod color', description: 'A pocket-sized archive with a click wheel.' },
   tinder: { label: 'Swipe', description: 'Skip left. Keep right. Nothing gets deleted.' },
   gallery: { label: 'Gallery', description: 'Pictures first. Follow your eye.' },
