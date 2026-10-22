@@ -23,7 +23,7 @@ export function initInterfaceControls(feed, loadNext) {
   empty.className = 'deck-empty'; empty.hidden = true; feed.append(empty);
   let kept = new Set();
   try { const data = JSON.parse(localStorage.getItem('posthole.kept') || '[]'); if (Array.isArray(data)) kept = new Set(data.filter(key => typeof key === 'string')); } catch {}
-  let onlyKept = false, index = 0, busy = false, menuOpen = false;
+  let onlyKept = false, index = 0, menuIndex = 0, busy = false, menuOpen = false;
   const all = () => [...feed.children].filter(el => el.matches('.post-entry'));
   const cards = () => all().filter(el => !onlyKept || kept.has(el.dataset.key));
   const current = () => cards()[index];
@@ -35,33 +35,76 @@ export function initInterfaceControls(feed, loadNext) {
   function show() {
     const list = cards();
     index = Math.max(0, Math.min(index, list.length - 1));
+    menuIndex = Math.max(0, Math.min(menuIndex, list.length - 1));
+    const selectedIndex = menuOpen ? menuIndex : index;
     for (const el of all()) {
       const active = el === list[index];
       el.classList.toggle('is-active', active);
       el.classList.toggle('is-kept', kept.has(el.dataset.key));
-      if (!active) el.querySelectorAll('video').forEach(video => video.pause());
+      if (!active || menuOpen) el.querySelectorAll('video').forEach(video => video.pause());
     }
     const more = !!feed.querySelector('.more[data-next]') && (!onlyKept || list.length < kept.size);
-    position.textContent = list.length ? `${index + 1} / ${list.length}${more ? '+' : ''}` : '0 posts';
+    position.textContent = list.length ? `${selectedIndex + 1} / ${list.length}${more ? '+' : ''}` : '0 posts';
     empty.hidden = list.length > 0 || !!feed.querySelector('.empty');
     empty.textContent = onlyKept ? 'No kept posts match these filters. Keep a post with the heart, or return to all posts.' : 'No saved posts here yet.';
-    document.querySelectorAll('[data-deck="previous"]').forEach(b => { b.disabled = index === 0 || busy; });
-    document.querySelectorAll('[data-deck="next"]').forEach(b => { b.disabled = busy || (!more && index >= list.length - 1); });
+    document.querySelectorAll('[data-deck="previous"]').forEach(b => { b.disabled = selectedIndex === 0 || busy; });
+    document.querySelectorAll('[data-deck="next"]').forEach(b => { b.disabled = busy || (!more && selectedIndex >= list.length - 1); });
     document.querySelectorAll('[data-deck="keep"],[data-deck="select"],[data-deck="play"]').forEach(b => { b.disabled = busy || !list.length; });
+    const menuButton = document.querySelector('[data-deck=menu]');
+    if (menuButton) menuButton.disabled = busy;
     const keep = document.querySelector('[data-deck="keep"]');
     if (keep) { const saved = kept.has(current()?.dataset.key); keep.setAttribute('aria-label', saved ? 'Unkeep post' : 'Keep post'); keep.setAttribute('aria-pressed', String(saved)); }
     const count = document.querySelector('[data-kept-count]'); if (count) count.textContent = kept.size;
     if (menu) {
       menu.replaceChildren(...list.map((el, i) => {
         const b = document.createElement('button'); b.textContent = el.dataset.title;
-        b.setAttribute('aria-current', String(i === index));
-        b.addEventListener('click', () => { index = i; setMenu(false); show(); feed.scrollTop = 0; });
+        b.dataset.postIndex = String(i);
+        b.setAttribute('aria-current', String(i === selectedIndex));
+        b.addEventListener('click', () => { menuIndex = i; openSelected(); });
         return b;
       }));
-      if (menuOpen) menu.querySelector('[aria-current="true"]')?.scrollIntoView({block:'nearest'});
+      if (more) {
+        const load = document.createElement('button'); load.type = 'button';
+        load.textContent = busy ? 'Loading…' : 'Load more posts'; load.disabled = busy;
+        load.addEventListener('click', async () => {
+          if (busy) return;
+          busy = true; show();
+          try { if (!(await ensure(list.length))) say('Couldn’t load more posts. Try again.'); }
+          finally { busy = false; show(); menu.focus(); }
+        });
+        menu.append(load);
+      }
+      if (!list.length) {
+        const message = document.createElement('p'); message.className = 'ipod-menu-empty';
+        message.textContent = 'No posts match these filters.'; menu.append(message);
+      }
+      if (menuOpen) {
+        const selected = menu.querySelector('[aria-current="true"]');
+        if (selected) {
+          const row = selected.getBoundingClientRect(), screen = menu.getBoundingClientRect();
+          if (row.top < screen.top) menu.scrollTop -= screen.top - row.top;
+          else if (row.bottom > screen.bottom) menu.scrollTop += row.bottom - screen.bottom;
+        }
+      }
     }
   }
-  function setMenu(open) { if (!menu) return; menuOpen = open; menu.hidden = !open; document.querySelector('[data-deck="menu"]').setAttribute('aria-expanded', String(open)); }
+  function setMenu(open) {
+    if (!menu) return;
+    if (open && !menuOpen) menuIndex = index;
+    menuOpen = open;
+    menu.hidden = !open;
+    feed.hidden = open;
+    document.querySelector('[data-player-title]').textContent = open ? 'Posts' : 'Postpod';
+    document.querySelector('[data-deck="menu"]').setAttribute('aria-expanded', String(open));
+    show();
+    (open ? menu : feed).focus();
+  }
+  function openSelected() {
+    if (busy || !cards().length) return;
+    if (menuOpen) index = menuIndex;
+    setMenu(false); feed.scrollTop = 0;
+    document.dispatchEvent(new CustomEvent('posthole:read', {detail:current()?.dataset.key}));
+  }
   async function ensure(target) {
     if (onlyKept && cards().length >= kept.size) return true;
     while (cards().length <= target && feed.querySelector('.more[data-next]')) {
@@ -73,10 +116,11 @@ export function initInterfaceControls(feed, loadNext) {
   async function navigate(delta) {
     if (busy) return;
     busy = true; show();
-    const target = Math.max(0, index + delta);
+    const target = Math.max(0, (menuOpen ? menuIndex : index) + delta);
     try {
       if (await ensure(target)) {
-        index = Math.min(target, cards().length - 1); feed.scrollTop = 0;
+        if (menuOpen) menuIndex = Math.min(target, cards().length - 1);
+        else { index = Math.min(target, cards().length - 1); feed.scrollTop = 0; }
         if (target >= cards().length) say('You’ve reached the end. Go back or change your filters.');
         else say('');
       } else say('Couldn’t load more posts. Try Next again.');
@@ -98,9 +142,10 @@ export function initInterfaceControls(feed, loadNext) {
     if (action === 'next') navigate(1);
     if (action === 'previous') navigate(-1);
     if (action === 'keep') keepCurrent();
-    if (action === 'menu') { setMenu(!menuOpen); show(); }
-    if (action === 'select') { setMenu(false); feed.focus(); }
+    if (action === 'menu' && !busy) setMenu(true);
+    if (action === 'select') openSelected();
     if (action === 'play') {
+      if (menuOpen) openSelected();
       const video = current()?.querySelector('video');
       if (video) { if (video.paused) video.play().catch(() => say('This saved video could not be played.')); else video.pause(); }
       else { feed.scrollBy({top:180,behavior:'auto'}); say('Scroll to read this post; it has no video.'); }
@@ -114,11 +159,11 @@ export function initInterfaceControls(feed, loadNext) {
     finally { busy = false; show(); feed.scrollTop = 0; }
   });
   document.addEventListener('keydown', event => {
-    if (event.target.closest('input,select,textarea,button:not([data-deck]),a,summary,video,[contenteditable]') || event.altKey || event.metaKey || event.ctrlKey) return;
+    if (event.target.closest('input,select,textarea,button:not([data-deck]):not([data-post-index]),a,summary,video,[contenteditable]') || event.altKey || event.metaKey || event.ctrlKey) return;
     if (event.key === 'ArrowRight' || (menuOpen && event.key === 'ArrowDown')) { event.preventDefault(); navigate(1); }
     if (event.key === 'ArrowLeft' || (menuOpen && event.key === 'ArrowUp')) { event.preventDefault(); navigate(-1); }
-    if (event.key === 'Escape') setMenu(false);
-    if (event.key === 'Enter' && menuOpen) { event.preventDefault(); setMenu(false); feed.focus(); }
+    if (event.key === 'Escape' && menuOpen) { event.preventDefault(); setMenu(false); }
+    if (event.key === 'Enter' && menuOpen) { event.preventDefault(); openSelected(); }
   });
   if (player) {
     let lastWheel = 0;

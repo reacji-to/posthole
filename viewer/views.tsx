@@ -318,6 +318,16 @@ export function Page({ children, counts, total, query }: { children: Child; coun
         {view === 'netflix' && <link rel="stylesheet" href="/netflix.css" />}
       </head>
       <body data-view={view}>
+        {view === 'ipod' && <svg width="0" height="0" aria-hidden="true" style="position:absolute" focusable="false">
+          <defs><filter id="postpod-monochrome" color-interpolation-filters="sRGB">
+            <feColorMatrix type="saturate" values="0" />
+            <feComponentTransfer>
+              <feFuncR type="discrete" tableValues="0 1" />
+              <feFuncG type="discrete" tableValues="0 1" />
+              <feFuncB type="discrete" tableValues="0 1" />
+            </feComponentTransfer>
+          </filter></defs>
+        </svg>}
         <nav class="bar">
           <a class="brand" href="/"><img src="/icon.png" alt="" />{player ? 'Postpod' : view === 'netflix' ? 'Postflix' : 'posthole'}</a>
           <div class="filters">
@@ -339,19 +349,19 @@ export function Page({ children, counts, total, query }: { children: Child; coun
         <div class="interface-toolbar"><form action="/" class="interface-picker">
           {[...query].filter(([key]) => key !== 'view').map(([key, value]) => <input type="hidden" name={key} value={value} />)}
           <label for="interface-select">Interface</label><select id="interface-select" name="view" aria-label="Interface">{Object.entries(INTERFACES).map(([id, info]) => <option value={id} selected={id === view}>{info.label}</option>)}</select><button class="apply-view" type="submit">Switch</button>
-        </form><span class="interface-description">{INTERFACES[view].description}</span>{view === 'tinder' && <button class="kept-filter" aria-pressed="false">Kept posts <b data-kept-count>0</b></button>}</div>
+        </form>{INTERFACES[view].description && <span class="interface-description">{INTERFACES[view].description}</span>}{view === 'tinder' && <button class="kept-filter" aria-pressed="false">Kept posts <b data-kept-count>0</b></button>}</div>
         <div class="viewer-layout">
           {(view === 'x' || view === 'linkedin') && <aside class="feed-sidebar"><strong>{view === 'x' ? 'Your timeline.' : 'Your reading room.'}</strong><p>Everything you saved.<br />In a different light.</p><a href={href(q => { q.delete('p'); q.delete('q'); })}>All posts</a><span>posthole / {INTERFACES[view].label}</span></aside>}
           {view === 'hackernews' && <div class="hn-masthead"><b>p</b><strong>Posthole News</strong><span>your saved internet</span></div>}
           <div class={player ? 'ipod-shell' : view === 'tinder' ? 'swipe-shell' : 'feed-shell'}>
             {view === 'tinder' && <div class="swipe-heading"><strong>A good post is worth keeping.</strong><span data-position /></div>}
             {player ? <div class="ipod-screen">
-              <div class="ipod-top"><strong>Postpod</strong><span data-position>Now reading</span><svg viewBox="0 0 28 14" width="26" height="14" aria-label="Archive available"><rect x="1" y="1" width="22" height="12" rx="2" fill="none" stroke="currentColor"/><path d="M24 4h3v6h-3zM4 4h16v6H4z" fill="currentColor"/></svg></div>
+              <div class="ipod-top"><strong data-player-title>Postpod</strong><span data-position>Now reading</span><svg viewBox="0 0 28 14" width="26" height="14" aria-label="Archive available"><rect x="1" y="1" width="22" height="12" rx="2" fill="none" stroke="currentColor"/><path d="M24 4h3v6h-3zM4 4h16v6H4z" fill="currentColor"/></svg></div>
               {feed}
-              <div class="ipod-list" hidden aria-label="Post menu" />
+              <div class="ipod-list" id="postpod-posts" tabindex="0" hidden aria-label="Posts" />
             </div> : feed}
             {player && <div class="click-wheel" aria-label="Archive click wheel">
-              <button class="wheel-menu" data-deck="menu" aria-label="Toggle post menu">MENU</button>
+              <button class="wheel-menu" data-deck="menu" aria-label="Show post list" aria-controls="postpod-posts" aria-expanded="false">MENU</button>
               <button class="wheel-prev" data-deck="previous" aria-label="Previous post"><Transport direction="previous" /></button>
               <button class="wheel-center" data-deck="select" aria-label="Read selected post" />
               <button class="wheel-next" data-deck="next" aria-label="Next post"><Transport direction="next" /></button>

@@ -4,7 +4,6 @@ export function initReadControls(root = document, storage) {
   const storageKey = 'posthole.read';
   const status = document.createElement('span');
   status.className = 'read-status'; status.setAttribute('role', 'status');
-  status.textContent = 'Read status is saved in this browser.';
   document.querySelector('.interface-toolbar')?.append(status);
   let read = new Set();
   function load() {
@@ -56,7 +55,7 @@ export function initReadControls(root = document, storage) {
       value ? latest.add(key) : latest.delete(key);
       storage.setItem(storageKey, JSON.stringify([...latest]));
       read = latest;
-      status.textContent = value ? 'Marked read · saved in this browser.' : 'Marked unread · saved in this browser.';
+      status.textContent = '';
       paint();
     } catch { status.textContent = 'Couldn’t save read status. Allow browser storage and try again.'; }
   }

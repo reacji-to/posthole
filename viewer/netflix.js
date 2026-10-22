@@ -55,9 +55,7 @@ export function initNetflix(feed, loadNext) {
   const play = document.createElement('button'); play.className = 'nf-primary'; play.dataset.openPost = featured.dataset.key; play.dataset.play = String(featured.dataset.mediaKind === 'video');
   play.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z" fill="currentColor"/></svg>';
   play.append(featured.dataset.mediaKind === 'video' ? 'Play' : 'Read post');
-  const info = document.createElement('button'); info.className = 'nf-secondary'; info.dataset.openPost = featured.dataset.key;
-  info.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7v1" stroke="currentColor" stroke-width="2"/></svg>';
-  info.append('More info'); actions.append(play, info); heroCopy.append(creator, title, desc, actions); hero.append(heroCopy);
+  actions.append(play); heroCopy.append(creator, title, desc, actions); hero.append(heroCopy);
   catalogue.append(hero, rows, more, status);
   const groups = [
     ['Watch next', el => el.dataset.mediaKind === 'video'],
