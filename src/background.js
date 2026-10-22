@@ -1,9 +1,11 @@
+import { createAutoScroller } from './auto-scroll.js';
 import { loadSettings, saveSettings } from './settings.js';
 import { expandTarget } from './expand.js';
 import { parsePayload } from './parsers/index.js';
 
 // Owns the connection to the native helper (which writes files), de-duplicates
 // posts across re-renders, and downloads assets in the background.
+const autoScroller = createAutoScroller(chrome, loadSettings);
 const HOST = 'com.imbue.posthole';
 const DEDUPE_MS = 10 * 60 * 1000;
 const CHUNK = 1024 * 1024;
@@ -437,8 +439,16 @@ async function syncGit(force = false) {
 async function checkBuild() {
   try {
     const { build } = await call('build', {}, 10000);
-    if (build && build !== __BUILD__) chrome.runtime.reload();
-  } catch { /* helper unavailable: nothing to compare */ }
+    if (!build) return { message: 'No local build found. Run npm run build in your posthole checkout.' };
+    if (build !== __BUILD__) {
+      // Let the popup display the result before its extension context disappears.
+      setTimeout(() => chrome.runtime.reload(), 250);
+      return { updated: true, message: 'New local build found. Reloading posthole…' };
+    }
+    return { updated: false, message: 'You’re running the latest local build. GitHub changes need to be downloaded and built first.' };
+  } catch {
+    return { updated: false, message: 'Couldn’t check for updates. Make sure the posthole helper is installed and connected.' };
+  }
 }
 
 // Tabs that were already open get the scripts too, so capture continues without reloading them.
@@ -459,10 +469,13 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 async function status() {
   await statsReady;
-  return { settings: await loadSettings(), host: state.hostInfo, hostError: state.hostError, stats, queue: assetJobs.length + assetsRunning, threads: threadStatus(), git: { running: git.running, last: git.last } };
+  return { autoScroll: await autoScroller.status(), settings: await loadSettings(), host: state.hostInfo, hostError: state.hostError, stats, queue: assetJobs.length + assetsRunning, threads: threadStatus(), git: { running: git.running, last: git.last } };
 }
 
 const handlers = {
+  checkUpdates: () => checkBuild(),
+  autoScrollStart: m => autoScroller.start(m.tabId, m.minutes),
+  autoScrollStop: () => autoScroller.stop(),
   items: (m, sender) => saveItems(m.platform, m.page ?? sender.tab?.url ?? null, m.items),
   raw: (m, sender) => saveRaw(m.platform, m.page ?? sender.tab?.url ?? null, m.payload),
   template: m => saveTemplate(m.platform, m.op, m.template),

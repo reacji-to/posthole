@@ -1,6 +1,10 @@
 // Shared by the live viewer and generated site. Source actions link to the
 // original; only archive disclosures change local state.
 export function initCardInteractions(feed) {
+  const markRead = node => {
+    const key = node.closest('[data-read-key]')?.dataset.readKey || node.closest('.post-entry[data-key]')?.dataset.key;
+    if (key) document.dispatchEvent(new CustomEvent('posthole:read', {detail:key}));
+  };
   feed.addEventListener('click', async event => {
     const expand = event.target.closest('.expand-text');
     if (expand) {
@@ -15,6 +19,7 @@ export function initCardInteractions(feed) {
       }
       expand.dataset.label ??= expand.textContent;
       expand.textContent = open ? 'Show less' : expand.dataset.label;
+      if (open) markRead(expand);
       return;
     }
     const button = event.target.closest('.replies-toggle');
@@ -45,6 +50,7 @@ export function initCardInteractions(feed) {
     box.hidden = false;
     button.setAttribute('aria-expanded', 'true');
     button.textContent = 'Hide replies';
+    markRead(button);
   });
   document.addEventListener('play', event => {
     for (const video of document.querySelectorAll('video')) if (video !== event.target && !video.muted) video.pause();

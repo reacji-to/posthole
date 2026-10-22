@@ -23,6 +23,7 @@ export function initNetflix(feed, loadNext) {
     dialogBody.replaceChildren(entry.querySelector(':scope > .interface-card'));
     oldOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden';
     dialog.showModal(); dialog.scrollTop = 0; close.focus();
+    document.dispatchEvent(new CustomEvent('posthole:read', {detail:key}));
     if (play) {
       const video = dialogBody.querySelector('video');
       if (video) { video.scrollIntoView({block:'nearest'}); video.play().catch(() => { dialogStatus.textContent = 'Couldn’t play this video. Try its player controls or open the original post.'; }); }
@@ -94,7 +95,7 @@ export function initNetflix(feed, loadNext) {
       track.scrollLeft = scrolls[rows.children.length - 1] || 0; update();
     });
     more.hidden = !feed.querySelector('.more[data-next]');
-    status.textContent = `${entries().length} posts loaded${more.hidden ? ' · you’re all caught up' : ''}`;
+    status.textContent = `${entries().length} posts loaded${more.hidden ? ' · all posts loaded' : ''}`;
   }
   more.addEventListener('click', async () => {
     more.disabled = true; more.textContent = 'Loading…';

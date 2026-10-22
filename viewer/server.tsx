@@ -86,6 +86,7 @@ app.get('/files/*', async c => {
 const here = import.meta.dir;
 app.get('/style.css', () => new Response(Bun.file(path.join(here, 'style.css'))));
 app.get('/card-interactions.js', () => new Response(Bun.file(path.join(here, 'card-interactions.js'))));
+app.get('/read-controls.js', () => new Response(Bun.file(path.join(here, 'read-controls.js'))));
 app.get('/client.js', () => new Response(Bun.file(path.join(here, 'client.js'))));
 app.get('/interfaces.css', () => new Response(Bun.file(path.join(here, 'interfaces.css'))));
 app.get('/interface-controls.js', () => new Response(Bun.file(path.join(here, 'interface-controls.js'))));

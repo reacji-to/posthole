@@ -16,10 +16,25 @@
   <p id="assets" class="muted"></p>
   <div id="last" class="last" hidden></div>
   <p id="problem" class="error" hidden></p>
+  <section class="auto-scroll" aria-labelledby="auto-scroll-heading">
+    <h2 id="auto-scroll-heading">Auto-scroll</h2>
+    <p class="muted">Scroll this feed while you use other tabs.</p>
+    <form id="auto-scroll-form">
+      <label for="scroll-minutes">Run for</label>
+      <input id="scroll-minutes" type="number" min="1" max="120" step="1" value="5" required>
+      <span>minutes</span>
+      <button id="scroll-start" type="submit">Start</button>
+      <button id="scroll-stop" type="button" hidden>Stop</button>
+    </form>
+    <p id="scroll-status" class="muted" role="status"></p>
+    <p id="scroll-error" class="error" role="alert" hidden></p>
+  </section>
   <footer>
     <button id="open" class="primary">Open folder</button>
     <button id="settings">Settings</button>
+    <button id="check-updates">Check for updates</button>
   </footer>
+  <p id="update-status" class="muted" role="status"></p>
   <script src="popup.js"></script>
 </body>
 </html>

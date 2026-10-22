@@ -23,3 +23,15 @@ body[data-view=terminal]{--bg:#101714;--ink:#cae8d1;--muted:#91b09b;--faint:#91b
 @media(max-width:1000px){.viewer-layout:has(.feed-sidebar){padding-right:16px;padding-left:180px}.feed-sidebar{width:155px}.feed-sidebar strong{font-size:23px}}
 @media(max-width:760px){.bar{padding:10px 12px;gap:8px}.bar .brand{margin-right:auto}.bar .filters{order:3;width:100%}.bar .search{max-width:210px;min-width:100px}.bar .order{font-size:11px}.interface-toolbar{padding:12px;gap:9px}.interface-description{display:none}.interface-picker select{min-width:140px}.viewer-layout:has(.feed-sidebar){padding:0}.feed-sidebar{display:none}.viewer-layout:has(.feed-sidebar) .feed{padding:0 8px 60px}body[data-view=hackernews] .viewer-layout{width:calc(100% - 16px)}.hn-masthead>span{display:none}.swipe-shell{margin:4px 12px}.swipe-shell .interface-card{padding:18px}.swipe-heading strong{font-size:14px}.swipe-controls{padding-top:14px;gap:20px}.kept-filter{padding:8px;font-size:12px}.interface-author{gap:8px}.interface-author .avatar{width:32px;height:32px}.interface-name{font-size:14px}.original-link{font-size:11px}.deck-status{margin:10px 16px 24px}body[data-view=gallery] .feed{padding:10px 12px 60px;columns:2 250px}body[data-view=terminal] .feed{padding:8px 16px 60px}.interface-card .tree .interface-card{padding:10px}.interface-toolbar:has(.kept-filter){gap:6px}.interface-toolbar:has(.kept-filter) label{display:none}}
 @media(prefers-reduced-motion:no-preference){.swipe-controls button{transition:transform .15s ease-out,background .15s}.swipe-shell .is-active{animation:deal-in .22s ease-out}@keyframes deal-in{from{transform:translateY(8px);opacity:.6}to{transform:none;opacity:1}}}
+
+/* Reserve space for an inset chevron instead of the platform's flush-right arrow. */
+.interface-picker select{appearance:none;-webkit-appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23707070' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-position:right 12px center;background-size:16px 16px;background-repeat:no-repeat}
+.read-status{font-size:11px;color:var(--muted)}
+.read-toggle{font:inherit;font-size:11px;color:var(--native-link,var(--link));background:transparent;border:0;padding:5px 0;cursor:pointer;white-space:nowrap}
+.read-toggle::before{content:'';display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:currentColor;vertical-align:middle}
+.read-toggle[aria-pressed=true]{color:var(--native-muted,var(--muted))}
+.read-toggle[aria-pressed=true]::before{background:transparent;outline:1px solid currentColor}
+.read-toggle:hover{text-decoration:underline}.read-toggle:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+body[data-view=hackernews] .post-entry[data-read=true]>.interface-card>.story-heading summary{color:#73736b}
+.nf-read-status{display:block;color:#bcbcbc;font-size:11px;padding:2px 3px}
+body[data-view=netflix] .interface-picker select{background-color:#222;color:#fff}

@@ -11,3 +11,11 @@ h1 { font-size: 15px; }
 .last .meta { font-size: 11px; color: var(--muted); }
 .last .text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 footer { display: flex; gap: 8px; margin-top: 12px; }
+
+.auto-scroll{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.auto-scroll h2{font-size:13px;margin:0 0 5px}.auto-scroll p{margin:5px 0 9px;font-size:12px}
+#auto-scroll-form{display:flex;align-items:center;gap:7px;font-size:12px}
+#scroll-minutes{width:56px;padding:6px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:inherit}
+#scroll-start,#scroll-stop{margin-left:auto}#scroll-status{overflow-wrap:anywhere}
+
+footer{flex-wrap:wrap}#check-updates{font-size:11px}#update-status:empty{display:none}

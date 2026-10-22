@@ -1,9 +1,14 @@
+import { platformFor } from './match.js';
 import { saveSettings } from './settings.js';
 import { LABELS, describeHost, formatBytes } from './ui.js';
 
 const $ = id => document.getElementById(id);
 
+let targetTab;
+let scrollBusy = false;
 async function render(status) {
+  if (status.error) { $('problem').hidden = false; $('problem').textContent = status.error; return; }
+  renderAutoScroll(status.autoScroll, status.settings);
   const { settings, stats, queue } = status;
   $('recording').checked = !settings.paused;
   $('recording-label').textContent = settings.paused ? 'Paused' : 'Saving';
@@ -41,5 +46,42 @@ $('recording').addEventListener('change', async event => {
 $('open').addEventListener('click', () => chrome.runtime.sendMessage({ type: 'openFolder' }));
 $('settings').addEventListener('click', () => chrome.runtime.openOptionsPage());
 
-refresh('hello');
+function renderAutoScroll(run = {}, settings) {
+  const running = !!run.running;
+  $('scroll-start').hidden = running; $('scroll-stop').hidden = !running;
+  const platform = targetTab?.url ? platformFor(new URL(targetTab.url).hostname) : null;
+  $('scroll-start').disabled = scrollBusy || !platform || settings.paused || settings.platforms[platform] === false;
+  $('scroll-minutes').disabled = running || scrollBusy;
+  if (running) {
+    const seconds = Math.max(0, Math.ceil((run.endsAt - Date.now()) / 1000));
+    $('scroll-status').textContent = `${run.title} · ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} left · ${run.steps} scrolls`;
+  } else {
+    $('scroll-status').textContent = run.reason || (!platform ? 'Open X, LinkedIn, Bluesky, Threads, or Hacker News to start.' : 'Keep the browser open. Background scrolling may slow down.');
+  }
+}
+async function changeScroll(message) {
+  scrollBusy = true; $('scroll-start').disabled = true; $('scroll-stop').disabled = true; $('scroll-error').hidden = true;
+  try {
+    const result = await chrome.runtime.sendMessage(message);
+    if (result.error) throw new Error(result.error);
+  } catch (error) { $('scroll-error').textContent = error.message; $('scroll-error').hidden = false; }
+  finally { scrollBusy = false; $('scroll-stop').disabled = false; await refresh(); }
+}
+$('auto-scroll-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!targetTab?.id || !$('auto-scroll-form').reportValidity()) return;
+  changeScroll({type:'autoScrollStart',tabId:targetTab.id,minutes:Number($('scroll-minutes').value)});
+});
+$('scroll-stop').addEventListener('click', () => changeScroll({type:'autoScrollStop'}));
+chrome.tabs.query({active:true,currentWindow:true}).then(tabs => { targetTab = tabs[0]; return refresh('hello'); });
 setInterval(refresh, 1500);
+
+$('check-updates').addEventListener('click', async () => {
+  $('check-updates').disabled = true;
+  $('update-status').textContent = 'Checking local build…';
+  try {
+    const result = await chrome.runtime.sendMessage({type:'checkUpdates'});
+    $('update-status').textContent = result.message || result.error || 'Couldn’t check for updates.';
+  } catch { $('update-status').textContent = 'The extension disconnected. Reopen this popup to check its status.'; }
+  finally { $('check-updates').disabled = false; }
+});

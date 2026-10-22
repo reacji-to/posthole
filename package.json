@@ -13,7 +13,7 @@
     "install-host": "node scripts/install-host.mjs",
     "icons": "node scripts/icons.mjs",
     "rebuild": "node scripts/rebuild.mjs",
-    "test:viewer": "bun test ./viewer/viewer.test.tsx",
+    "test:viewer": "bun test ./viewer/*.test.ts ./viewer/*.test.tsx",
     "package": "node scripts/package.mjs"
   },
   "devDependencies": {

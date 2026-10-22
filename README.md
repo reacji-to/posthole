@@ -116,3 +116,11 @@ Layout:
 - `github/` holds the workflow and indexer the helper installs into the save folder's repository
 
 The Bluesky and Hacker News fixtures in `tests/fixtures/` are real responses. The X, Threads and LinkedIn fixtures (`*.synthetic.*`) are hand-built from those sites' known data shapes; replace them with captures from `raw/` when available.
+
+### Reading status and automatic scrolling
+
+The local viewer shows **Read / Unread** controls on posts. Opening a story, expanding its text or replies, playing its video, or opening a Postflix detail panel marks it read. Click **Read** to mark it unread again. Scrolling past a post does not mark it read. Read history stays in this browser and is shared across the viewer’s interfaces; it is separate from capture history and is not synced to another browser.
+
+In the extension popup, **Auto-scroll** lets you choose 1–120 minutes and start scrolling the current supported feed. You can switch tabs; **Stop** remains available from the popup. The run stops at its deadline, when saving is paused, when the tab navigates or closes, or after a minute without further scrolling content. Keep the browser open; sleeping computers, suspended tabs, and sites that pause their feeds in the background can interrupt progress. The extension never switches to the tab or clicks posts for you.
+
+**Check for updates** checks the native helper for a newer local build and reloads the extension when one is available. For this unpacked installation, download source updates and run `npm run build` first; the button does not pull from GitHub. New local builds are also detected automatically.

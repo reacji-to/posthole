@@ -1,3 +1,4 @@
+import { initReadControls } from './read-controls.js';
 import { initCardInteractions } from './card-interactions.js';
 import { initInterfaceControls } from './interface-controls.js';
 const feed = document.querySelector('.feed');
@@ -38,3 +39,5 @@ if (document.body.dataset.view === 'netflix') {
   const { initNetflix } = await import('./netflix.js');
   initNetflix(feed, loadNext);
 }
+
+initReadControls();
