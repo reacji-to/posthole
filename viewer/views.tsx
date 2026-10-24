@@ -351,10 +351,9 @@ export function Page({ children, counts, total, query }: { children: Child; coun
           <label for="interface-select">Interface</label><select id="interface-select" name="view" aria-label="Interface">{Object.entries(INTERFACES).map(([id, info]) => <option value={id} selected={id === view}>{info.label}</option>)}</select><button class="apply-view" type="submit">Switch</button>
         </form>{INTERFACES[view].description && <span class="interface-description">{INTERFACES[view].description}</span>}{view === 'tinder' && <button class="kept-filter" aria-pressed="false">Kept posts <b data-kept-count>0</b></button>}</div>
         <div class="viewer-layout">
-          {(view === 'x' || view === 'linkedin') && <aside class="feed-sidebar"><strong>{view === 'x' ? 'Your timeline.' : 'Your reading room.'}</strong><p>Everything you saved.<br />In a different light.</p><a href={href(q => { q.delete('p'); q.delete('q'); })}>All posts</a><span>posthole / {INTERFACES[view].label}</span></aside>}
-          {view === 'hackernews' && <div class="hn-masthead"><b>p</b><strong>Posthole News</strong><span>your saved internet</span></div>}
+          {view === 'hackernews' && <div class="hn-masthead"><b>p</b><strong>Poster News</strong><span>your saved internet</span></div>}
           <div class={player ? 'ipod-shell' : view === 'tinder' ? 'swipe-shell' : 'feed-shell'}>
-            {view === 'tinder' && <div class="swipe-heading"><strong>A good post is worth keeping.</strong><span data-position /></div>}
+            {view === 'tinder' && <div class="swipe-heading"><span data-position /></div>}
             {player ? <div class="ipod-screen">
               <div class="ipod-top"><strong data-player-title>Postpod</strong><span data-position>Now reading</span><svg viewBox="0 0 28 14" width="26" height="14" aria-label="Archive available"><rect x="1" y="1" width="22" height="12" rx="2" fill="none" stroke="currentColor"/><path d="M24 4h3v6h-3zM4 4h16v6H4z" fill="currentColor"/></svg></div>
               {feed}
