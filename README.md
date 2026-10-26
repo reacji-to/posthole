@@ -62,6 +62,10 @@ A local site with a card for every post you scrolled past, in the order you saw 
 cd viewer && bun install && bun start   # http://localhost:4747  (--dir to read another save folder)
 ```
 
+On macOS, keep the viewer running automatically instead of leaving a terminal open. From the repository root, run `npm run install-server`. It starts immediately at [localhost:4747](http://localhost:4747), restarts if it exits, and starts each time you log in. It reads `~/posthole`; use `npm run install-server -- --dir /absolute/path/to/archive --port 4747` to choose another archive or port. The server listens only on this computer.
+
+The LaunchAgent is `~/Library/LaunchAgents/ink.posthole.viewer.plist`; logs are in `~/Library/Logs/Posthole/`. After updating viewer code, run `launchctl kickstart -k gui/$(id -u)/ink.posthole.viewer`. Re-run the installer after moving the program or Bun. To stop and remove automatic startup, run `npm run install-server -- --uninstall`; saved posts are preserved. The server resumes after sleep while your macOS login session is active.
+
 Use the **Interface** menu to read the same archive eight ways: original site cards, Poster News, Postpod classic, Postpod color, Swipe, Gallery, Terminal, or Postflix. The interface is independent of the source filter: you can read LinkedIn posts in the Poster News view, for example. Search, ordering, saved media, quotes, and reply threads keep working. Your choice is remembered in this browser, and `?view=ipod-color` (or another interface ID) makes a direct link.
 
 - **Postpod:** next/previous buttons move between posts. Left opens the menu; Up/Down move through its list or scroll the open post; Right opens the selected post; Space plays or pauses video. Scrolling on the click wheel also moves through the list or scrolls the open post. MENU replaces the screen with a scrollable post list; the wheel changes its selection and the center button opens that post. Play/pause controls the current post's video. Both themes share the same larger 4:3 screen and navigation. The classic screen uses a true 1-bit black/white threshold on its entire display, including images and videos.

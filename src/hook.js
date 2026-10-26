@@ -183,7 +183,7 @@ import { cookie, linkedInCommentsUrl, linkedInSduiBody, threadsReplayBody, xCurs
       if (!any?.headers?.authorization && !own?.headers?.authorization) return { status: 'not-ready', detail: 'No X API request seen yet in this tab.' };
       const queryId = own?.url.match(/\/graphql\/([^/]+)\//)?.[1] ?? await xQueryId('TweetDetail');
       if (!queryId) return { status: 'not-ready', detail: 'TweetDetail query ID unknown.' };
-      const headers = { ...any.headers, ...(own?.headers ?? {}), 'x-csrf-token': cookie(document.cookie, 'ct0') ?? '' };
+      const headers = { ...(any?.headers ?? {}), ...(own?.headers ?? {}), 'x-csrf-token': cookie(document.cookie, 'ct0') ?? '' };
       delete headers['content-length'];
       // Copy the feature flags from the client's own requests; without them X omits fields.
       const shapeFrom = own?.url ?? live._featured?.url ?? Object.values(stored).find(t => /[?&]features=/.test(t.url ?? ''))?.url ?? any.url;
